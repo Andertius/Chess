@@ -2,12 +2,20 @@
 {
     public abstract class ChessPiece
     {
-        public ChessPiece(int x, int y, bool isWhite, int value)
+        public ChessPiece(int x, int y, PieceColor color, int value)
         {
             X = x;
             Y = y;
-            IsWhite = isWhite;
+            Color = color;
             Value = value;
+        }
+
+        public ChessPiece(ChessPiece piece)
+        {
+            X = piece.X;
+            Y = piece.Y;
+            Color = piece.Color;
+            Value = piece.Value;
         }
 
         protected static int KingValue => -1;
@@ -16,16 +24,26 @@
 
         public int Y { get; protected set; }
 
-        public bool IsWhite { get; }
+        public PieceColor Color { get; }
 
         public int Value { get; }
 
-        public virtual bool Move(int newX, int newY)
+        public virtual bool Move(int newX, int newY, Board board)
         {
-            if ((newX != X || newY != Y) && IsValidMove(newX, newY))
+            if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
+                board[X, Y].BlankOccupied();
                 X = newX;
                 Y = newY;
+
+                if (Color == PieceColor.White)
+                {
+                    board[X, Y].WhiteOccupied();
+                }
+                else
+                {
+                    board[X, Y].BlackOccupied();
+                }
 
                 return true;
             }
@@ -33,6 +51,6 @@
             return false;
         }
 
-        public virtual bool IsValidMove(int newX, int newY) => true;
+        public virtual bool IsValidMove(int newX, int newY, Board board) => true;
     }
 }
