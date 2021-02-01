@@ -11,38 +11,17 @@ namespace Chess.Core.Pieces
         {
             if (newX < 8 && newY < 8 && newX > -1 && newY > -1 && Color != board[newX, newY].OccupiedBy?.Color)
             {
-                if (newX == X && newY == Y + 1)
-                {
-                    return true;
-                }
-                else if (newX == X + 1 && newY == Y + 1)
-                {
-                    return true;
-                }
-                else if (newX == X + 1 && newY == Y)
-                {
-                    return true;
-                }
-                else if (newX == X + 1 && newY == Y - 1)
-                {
-                    return true;
-                }
-                else if (newX == X && newY == Y - 1)
-                {
-                    return true;
-                }
-                else if (newX == X - 1 && newY == Y - 1)
-                {
-                    return true;
-                }
-                else if (newX == X - 1 && newY == Y)
-                {
-                    return true;
-                }
-                else if (newX == X - 1 && newY == Y + 1)
-                {
-                    return true;
-                }
+                return IsValid(newX, newY);
+            }
+
+            return false;
+        }
+
+        public override bool Protects(int x, int y, Board board)
+        {
+            if ((x != X || y != Y) && x < 8 && y < 8 && x > -1 && y > -1)
+            {
+                return IsValid(x, y);
             }
 
             return false;
@@ -66,6 +45,44 @@ namespace Chess.Core.Pieces
         public bool Equals(King king)
         {
             return X == king.X && Y == king.Y && Value == king.Value && Color == king.Color;
+        }
+
+        private bool IsValid(int x, int y)
+        {
+            if (x == X && y == Y + 1)
+            {
+                return true;
+            }
+            else if (x == X + 1 && y == Y + 1)
+            {
+                return true;
+            }
+            else if (x == X + 1 && y == Y)
+            {
+                return true;
+            }
+            else if (x == X + 1 && y == Y - 1)
+            {
+                return true;
+            }
+            else if (x == X && y == Y - 1)
+            {
+                return true;
+            }
+            else if (x == X - 1 && y == Y - 1)
+            {
+                return true;
+            }
+            else if (x == X - 1 && y == Y)
+            {
+                return true;
+            }
+            else if (x == X - 1 && y == Y + 1)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

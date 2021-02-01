@@ -11,8 +11,8 @@ namespace Chess.Tests
         [TestMethod]
         public void CanWhitePawnMove()
         {
-            var pawn = new Pawn(1, 1, PieceColor.White);
             var board = new Board();
+            var pawn = board[1, 1].OccupiedBy;
 
             Assert.IsTrue(pawn.Move(1, 3, board));
             Assert.IsTrue(pawn.Move(1, 4, board));
@@ -28,15 +28,15 @@ namespace Chess.Tests
             Assert.IsNull(board[1, 1].OccupiedBy);
 
             var pawn1 = new Pawn(2, 1, PieceColor.White);
-            board.Occupy(2, 2, pawn1);
+            Board.Occupy(board[2, 2], pawn1);
             Assert.IsFalse(pawn1.Move(2, 3, board));
         }
 
         [TestMethod]
         public void CanBlackPawnMove()
         {
-            var pawn = new Pawn(1, 6, PieceColor.Black);
             var board = new Board();
+            var pawn = board[1, 6].OccupiedBy;
 
             Assert.IsTrue(pawn.Move(1, 4, board));
             Assert.IsTrue(pawn.Move(1, 3, board));
@@ -51,7 +51,7 @@ namespace Chess.Tests
             Assert.IsNull(board[1, 6].OccupiedBy);
 
             var pawn1 = new Pawn(2, 6, PieceColor.White);
-            board.Occupy(2, 5, new Pawn(2, 5, PieceColor.Black));
+            Board.Occupy(board[2, 5], new Pawn(2, 5, PieceColor.Black));
             Assert.IsFalse(pawn1.Move(2, 4, board));
         }
     }

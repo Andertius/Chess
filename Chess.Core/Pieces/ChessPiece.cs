@@ -1,4 +1,6 @@
-﻿namespace Chess.Core.Pieces
+﻿using System;
+
+namespace Chess.Core.Pieces
 {
     public abstract class ChessPiece
     {
@@ -32,12 +34,13 @@
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
-                board.Occupy(newX, newY, board[X, Y].OccupiedBy);
-                board.Occupy(X, Y, null);
+                Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);
+                Board.Occupy(board[X, Y], null);
 
                 X = newX;
                 Y = newY;
 
+                board.CheckForProtection();
                 return true;
             }
 
@@ -45,5 +48,7 @@
         }
 
         public virtual bool IsValidMove(int newX, int newY, Board board) => true;
+
+        public virtual bool Protects(int x, int y, Board board) => true;
     }
 }

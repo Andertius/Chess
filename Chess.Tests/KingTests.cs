@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using Chess.Core;
+﻿using Chess.Core;
 using Chess.Core.Pieces;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -15,7 +13,7 @@ namespace Chess.Tests
         {
             var king = new King(3, 3, PieceColor.White);
             var board = new Board();
-            board.Occupy(2, 2, king);
+            Board.Occupy(board[2, 2], king);
 
             Assert.IsTrue(king.Move(3, 4, board));
             Assert.IsTrue(king.Move(4, 5, board));

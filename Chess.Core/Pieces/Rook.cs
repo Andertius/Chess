@@ -11,56 +11,17 @@ namespace Chess.Core.Pieces
         {
             if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY].OccupiedBy?.Color)
             {
-                if (newX == X)
-                {
-                    if (newY > Y)
-                    {
-                        for (int i = Y + 1; i < newY; i++)
-                        {
-                            if (!(board[X, i].OccupiedBy is null))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = Y - 1; i > newY; i--)
-                        {
-                            if (!(board[X, i].OccupiedBy is null))
-                            {
-                                return false;
-                            }
-                        }
-                    }
+                return IsValid(newX, newY, board);
+            }
 
-                    return true;
-                }
-                else if (newY == Y)
-                {
-                    if (newX > X)
-                    {
-                        for (int i = X + 1; i < newX; i++)
-                        {
-                            if (!(board[i, Y].OccupiedBy is null))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = X - 1; i > newX; i--)
-                        {
-                            if (!(board[i, Y].OccupiedBy is null))
-                            {
-                                return false;
-                            }
-                        }
-                    }
+            return false;
+        }
 
-                    return true;
-                }
+        public override bool Protects(int x, int y, Board board)
+        {
+            if ((x != X || y != Y) && x > -1 && x < 8 && y > -1 && y < 8)
+            {
+                return IsValid(x, y, board);
             }
 
             return false;
@@ -84,6 +45,62 @@ namespace Chess.Core.Pieces
         public bool Equals(Rook rook)
         {
             return X == rook.X && Y == rook.Y && Value == rook.Value && Color == rook.Color;
+        }
+
+        private bool IsValid(int x, int y, Board board)
+        {
+            if (x == X)
+            {
+                if (y > Y)
+                {
+                    for (int i = Y + 1; i < y; i++)
+                    {
+                        if (!(board[X, i].OccupiedBy is null))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = Y - 1; i > y; i--)
+                    {
+                        if (!(board[X, i].OccupiedBy is null))
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+            else if (y == Y)
+            {
+                if (x > X)
+                {
+                    for (int i = X + 1; i < x; i++)
+                    {
+                        if (!(board[i, Y].OccupiedBy is null))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = X - 1; i > x; i--)
+                    {
+                        if (!(board[i, Y].OccupiedBy is null))
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

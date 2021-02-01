@@ -11,37 +11,17 @@ namespace Chess.Core.Pieces
         {
             if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY].OccupiedBy?.Color)
             {
-                for (int i = 0; X + i < 8 && Y + i < 8; i++)
-                {
-                    if (newX == X + i && newY == Y + i)
-                    {
-                        return IsValidUpRightMove(newX, board);
-                    }
-                }
+                return IsValid(newX, newY, board);
+            }
 
-                for (int i = 0; X + i < 8 && Y - i > -1; i++)
-                {
-                    if (newX == X + i && newY == Y - i)
-                    {
-                        return IsValidDownRightMove(newX, board);
-                    }
-                }
+            return false;
+        }
 
-                for (int i = 0; X - i > -1 && Y - i > -1; i++)
-                {
-                    if (newX == X - i && newY == Y - i)
-                    {
-                        return IsValidDownLeftMove(newX, board);
-                    }
-                }
-
-                for (int i = 0; X - i > -1 && Y + i < 8; i++)
-                {
-                    if (newX == X - i && newY == Y + i)
-                    {
-                        return IsValidUpLeftMove(newX, board);
-                    }
-                }
+        public override bool Protects(int x, int y, Board board)
+        {
+            if ((x != X || y != Y) && x > -1 && x < 8 && y > -1 && y < 8)
+            {
+                return IsValid(x, y, board);
             }
 
             return false;
@@ -65,6 +45,43 @@ namespace Chess.Core.Pieces
         public bool Equals(Bishop bishop)
         {
             return X == bishop.X && Y == bishop.Y && Value == bishop.Value && Color == bishop.Color;
+        }
+
+        private bool IsValid(int x, int y, Board board)
+        {
+            for (int i = 0; X + i < 8 && Y + i < 8; i++)
+            {
+                if (x == X + i && y == Y + i)
+                {
+                    return IsValidUpRightMove(x, board);
+                }
+            }
+
+            for (int i = 0; X + i < 8 && Y - i > -1; i++)
+            {
+                if (x == X + i && y == Y - i)
+                {
+                    return IsValidDownRightMove(x, board);
+                }
+            }
+
+            for (int i = 0; X - i > -1 && Y - i > -1; i++)
+            {
+                if (x == X - i && y == Y - i)
+                {
+                    return IsValidDownLeftMove(x, board);
+                }
+            }
+
+            for (int i = 0; X - i > -1 && Y + i < 8; i++)
+            {
+                if (x == X - i && y == Y + i)
+                {
+                    return IsValidUpLeftMove(x, board);
+                }
+            }
+
+            return false;
         }
 
         private bool IsValidUpRightMove(int newX, Board board)
@@ -95,7 +112,7 @@ namespace Chess.Core.Pieces
 
         private bool IsValidDownLeftMove(int newX, Board board)
         {
-            for (int i = X - 1, j = Y - 1; i < newX; i--, j--)
+            for (int i = X - 1, j = Y - 1; i > newX; i--, j--)
             {
                 if (!(board[i, j].OccupiedBy is null))
                 {
@@ -108,7 +125,7 @@ namespace Chess.Core.Pieces
 
         private bool IsValidUpLeftMove(int newX, Board board)
         {
-            for (int i = X - 1, j = Y + 1; i < newX; i--, j++)
+            for (int i = X - 1, j = Y + 1; i > newX; i--, j++)
             {
                 if (!(board[i, j].OccupiedBy is null))
                 {

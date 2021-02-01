@@ -13,7 +13,7 @@ namespace Chess.Tests
         {
             var rook = new Rook(2, 2, PieceColor.White);
             var board = new Board();
-            board.Occupy(2, 2, rook);
+            Board.Occupy(board[2, 2], rook);
 
             Assert.IsTrue(rook.Move(7, 2, board));
             Assert.IsTrue(rook.Move(7, 5, board));
@@ -35,8 +35,8 @@ namespace Chess.Tests
         [TestMethod]
         public void CanKnightMove()
         {
-            var knight = new Knight(1, 0, PieceColor.White);
             var board = new Board();
+            var knight = board[1, 0].OccupiedBy;
 
             Assert.IsTrue(knight.Move(2, 2, board));
             Assert.IsTrue(knight.Move(4, 3, board));
@@ -67,7 +67,7 @@ namespace Chess.Tests
         {
             var bishop = new Bishop(2, 2, PieceColor.White);
             var board = new Board();
-            board.Occupy(2, 2, bishop);
+            Board.Occupy(board[2, 2], bishop);
 
             Assert.IsTrue(bishop.Move(3, 3, board));
 
@@ -91,7 +91,7 @@ namespace Chess.Tests
         {
             var queen = new Queen(2, 2, PieceColor.White);
             var board = new Board();
-            board.Occupy(2, 2, queen);
+            Board.Occupy(board[2, 2], queen);
 
             Assert.IsTrue(queen.Move(7, 2, board));
             Assert.IsTrue(queen.Move(7, 5, board));

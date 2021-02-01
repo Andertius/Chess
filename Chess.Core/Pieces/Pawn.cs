@@ -15,8 +15,8 @@ namespace Chess.Core.Pieces
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
-                board.Occupy(newX, newY, board[X, Y].OccupiedBy);
-                board.Occupy(X, Y, null);
+                Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);
+                Board.Occupy(board[X, Y], null);
 
                 X = newX;
                 Y = newY;
@@ -28,6 +28,7 @@ namespace Chess.Core.Pieces
                     Promote();
                 }
 
+                board.CheckForProtection();
                 return true;
             }
 
@@ -83,6 +84,20 @@ namespace Chess.Core.Pieces
                 {
                     return true;
                 }
+            }
+
+            return false;
+        }
+
+        public override bool Protects(int x, int y, Board board)
+        {
+            if (Color == PieceColor.White && (x == X + 1 && y == Y + 1 || x == X - 1 && y == Y + 1))
+            {
+                return true;
+            }
+            else if (Color == PieceColor.Black && (x == X + 1 && y == Y - 1 || x == X - 1 && y == Y - 1))
+            {
+                return true;
             }
 
             return false;
