@@ -9,7 +9,7 @@ namespace Chess.Core.Pieces
 
         public override bool IsValidMove(int newX, int newY, Board board)
         {
-            if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY]?.Color)
+            if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY].OccupiedBy?.Color)
             {
                 if (newX == X)
                 {
@@ -17,7 +17,7 @@ namespace Chess.Core.Pieces
                     {
                         for (int i = Y + 1; i < newY; i++)
                         {
-                            if (!(board[X, i] is null))
+                            if (!(board[X, i].OccupiedBy is null))
                             {
                                 return false;
                             }
@@ -27,7 +27,7 @@ namespace Chess.Core.Pieces
                     {
                         for (int i = Y - 1; i > newY; i--)
                         {
-                            if (!(board[X, i] is null))
+                            if (!(board[X, i].OccupiedBy is null))
                             {
                                 return false;
                             }
@@ -42,7 +42,7 @@ namespace Chess.Core.Pieces
                     {
                         for (int i = X + 1; i < newX; i++)
                         {
-                            if (!(board[i, Y] is null))
+                            if (!(board[i, Y].OccupiedBy is null))
                             {
                                 return false;
                             }
@@ -52,7 +52,7 @@ namespace Chess.Core.Pieces
                     {
                         for (int i = X - 1; i > newX; i--)
                         {
-                            if (!(board[i, Y] is null))
+                            if (!(board[i, Y].OccupiedBy is null))
                             {
                                 return false;
                             }
@@ -122,7 +122,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X + 1, j = Y + 1; i < newX; i++, j++)
             {
-                if (!(board[i, j] is null))
+                if (!(board[i, j].OccupiedBy is null))
                 {
                     return false;
                 }
@@ -135,7 +135,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X + 1, j = Y - 1; i < newX; i++, j--)
             {
-                if (!(board[i, j] is null))
+                if (!(board[i, j].OccupiedBy is null))
                 {
                     return false;
                 }
@@ -148,7 +148,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X - 1, j = Y - 1; i < newX; i--, j--)
             {
-                if (!(board[i, j] is null))
+                if (!(board[i, j].OccupiedBy is null))
                 {
                     return false;
                 }
@@ -161,7 +161,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X - 1, j = Y + 1; i < newX; i--, j++)
             {
-                if (!(board[i, j] is null))
+                if (!(board[i, j].OccupiedBy is null))
                 {
                     return false;
                 }

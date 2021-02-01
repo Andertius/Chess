@@ -15,7 +15,7 @@ namespace Chess.Core.Pieces
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
-                board.Occupy(newX, newY, board[X, Y]);
+                board.Occupy(newX, newY, board[X, Y].OccupiedBy);
                 board.Occupy(X, Y, null);
 
                 X = newX;
@@ -39,23 +39,23 @@ namespace Chess.Core.Pieces
             if (Color == PieceColor.White)
             {
                 if (newY == Y + 1 && (newX == X + 1 || newX == X - 1) &&
-                    (!(board[X + 1, Y + 1] is null) && board[X + 1, Y + 1].Color != Color ||
-                    !(board[X + 1, Y + 1] is null) && board[X - 1, Y + 1].Color != Color))
+                    (!(board[X + 1, Y + 1].OccupiedBy is null) && board[X + 1, Y + 1].OccupiedBy.Color != Color ||
+                    !(board[X + 1, Y + 1].OccupiedBy is null) && board[X - 1, Y + 1].OccupiedBy.Color != Color))
                 {
                     return true;
                 }
                 else if (!IsMoved)
                 {
-                    if (newY == Y + 2 && newX == X && board[X, Y + 1] is null && board[X, Y + 2] is null)
+                    if (newY == Y + 2 && newX == X && board[X, Y + 1].OccupiedBy is null && board[X, Y + 2].OccupiedBy is null)
                     {
                         return true;
                     }
-                    else if (newY == Y + 1 && newX == X && board[X, Y + 1] is null)
+                    else if (newY == Y + 1 && newX == X && board[X, Y + 1].OccupiedBy is null)
                     {
                         return true;
                     }
                 }
-                else if (IsMoved && newY == Y + 1 && newX == X && board[X, Y + 1] is null)
+                else if (IsMoved && newY == Y + 1 && newX == X && board[X, Y + 1].OccupiedBy is null)
                 {
                     return true;
                 }
@@ -63,23 +63,23 @@ namespace Chess.Core.Pieces
             else
             {
                 if (newY == Y - 1 && (newX == X + 1 || newX == X - 1) &&
-                    (!(board[X + 1, Y - 1] is null) && board[X + 1, Y - 1].Color != Color ||
-                    !(board[X + 1, Y - 1] is null) && board[X - 1, Y - 1].Color != Color))
+                    (!(board[X + 1, Y - 1].OccupiedBy is null) && board[X + 1, Y - 1].OccupiedBy.Color != Color ||
+                    !(board[X + 1, Y - 1].OccupiedBy is null) && board[X - 1, Y - 1].OccupiedBy.Color != Color))
                 {
                     return true;
                 }
                 else if (!IsMoved)
                 {
-                    if (newY == Y - 2 && newX == X && board[X, Y - 1] is null && board[X, Y - 2] is null)
+                    if (newY == Y - 2 && newX == X && board[X, Y - 1].OccupiedBy is null && board[X, Y - 2].OccupiedBy is null)
                     {
                         return true;
                     }
-                    else if (newY == Y - 1 && newX == X && board[X, Y - 1] is null)
+                    else if (newY == Y - 1 && newX == X && board[X, Y - 1].OccupiedBy is null)
                     {
                         return true;
                     }
                 }
-                else if (IsMoved && newY == Y - 1 && newX == X && board[X, Y - 1] is null)
+                else if (IsMoved && newY == Y - 1 && newX == X && board[X, Y - 1].OccupiedBy is null)
                 {
                     return true;
                 }

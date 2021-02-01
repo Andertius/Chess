@@ -24,8 +24,8 @@ namespace Chess.Tests
             Assert.IsFalse(pawn.Move(1, 6, board));
 
             Assert.IsTrue(pawn.Move(2, 6, board));
-            Assert.IsTrue(board[2, 6].Color == PieceColor.White);
-            Assert.IsNull(board[1, 1]);
+            Assert.IsTrue(board[2, 6].OccupiedBy.Color == PieceColor.White);
+            Assert.IsNull(board[1, 1].OccupiedBy);
 
             var pawn1 = new Pawn(2, 1, PieceColor.White);
             board.Occupy(2, 2, pawn1);
@@ -47,8 +47,8 @@ namespace Chess.Tests
             Assert.IsFalse(pawn.Move(5, 1, board));
 
             Assert.IsTrue(pawn.Move(2, 1, board));
-            Assert.IsTrue(board[2, 1].Color == PieceColor.Black);
-            Assert.IsNull(board[1, 6]);
+            Assert.IsTrue(board[2, 1].OccupiedBy.Color == PieceColor.Black);
+            Assert.IsNull(board[1, 6].OccupiedBy);
 
             var pawn1 = new Pawn(2, 6, PieceColor.White);
             board.Occupy(2, 5, new Pawn(2, 5, PieceColor.Black));

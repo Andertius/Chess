@@ -28,8 +28,8 @@ namespace Chess.Tests
 
             Assert.IsTrue(rook.Move(3, 6, board));
 
-            Assert.IsTrue(board[3, 6].Color == PieceColor.White);
-            Assert.IsNull(board[2, 2]);
+            Assert.IsTrue(board[3, 6].OccupiedBy.Color == PieceColor.White);
+            Assert.IsNull(board[2, 2].OccupiedBy);
         }
 
         [TestMethod]
@@ -58,8 +58,8 @@ namespace Chess.Tests
             Assert.IsFalse(knight.Move(7, 7, board));
             Assert.IsFalse(knight.Move(1, 7, board));
 
-            Assert.IsTrue(board[2, 7].Color == PieceColor.White);
-            Assert.IsNull(board[1, 0]);
+            Assert.IsTrue(board[2, 7].OccupiedBy.Color == PieceColor.White);
+            Assert.IsNull(board[1, 0].OccupiedBy);
         }
 
         [TestMethod]
@@ -82,8 +82,8 @@ namespace Chess.Tests
             Assert.IsFalse(bishop.Move(7, 2, board));
             Assert.IsFalse(bishop.Move(0, 5, board));
 
-            Assert.IsTrue(board[0, 2].Color == PieceColor.White);
-            Assert.IsNull(board[2, 2]);
+            Assert.IsTrue(board[0, 2].OccupiedBy.Color == PieceColor.White);
+            Assert.IsNull(board[2, 2].OccupiedBy);
         }
 
         [TestMethod]
@@ -108,8 +108,8 @@ namespace Chess.Tests
             Assert.IsFalse(queen.Move(3, 1, board));
             Assert.IsFalse(queen.Move(3, 7, board));
 
-            Assert.IsTrue(board[1, 3].Color == PieceColor.White);
-            Assert.IsNull(board[2, 2]);
+            Assert.IsTrue(board[1, 3].OccupiedBy.Color == PieceColor.White);
+            Assert.IsNull(board[2, 2].OccupiedBy);
         }
     }
 }

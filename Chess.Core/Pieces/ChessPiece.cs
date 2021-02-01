@@ -32,7 +32,7 @@
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
-                board.Occupy(newX, newY, board[X, Y]);
+                board.Occupy(newX, newY, board[X, Y].OccupiedBy);
                 board.Occupy(X, Y, null);
 
                 X = newX;

@@ -27,5 +27,7 @@ namespace Chess.Core
         public int TotalWhiteValue => White.Select(x => x.Value).Sum();
 
         public int TotalBlackValue => Black.Select(x => x.Value).Sum();
+
+        public bool IsWhitesTurn { get; private set; }
     }
 }
