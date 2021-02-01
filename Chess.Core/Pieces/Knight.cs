@@ -9,7 +9,7 @@ namespace Chess.Core.Pieces
 
         public override bool IsValidMove(int newX, int newY, Board board)
         {
-            if (newX < 8 && newY < 8 && newX > -1 && newY > -1 && Color != board[newX, newY].OccupiedBy)
+            if (newX < 8 && newY < 8 && newX > -1 && newY > -1 && Color != board[newX, newY]?.Color)
             {
                 if (newX == X + 1 && newY == Y + 2)
                 {

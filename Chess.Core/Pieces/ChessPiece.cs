@@ -32,18 +32,11 @@
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
-                board[X, Y].BlankOccupied();
+                board.Occupy(newX, newY, board[X, Y]);
+                board.Occupy(X, Y, null);
+
                 X = newX;
                 Y = newY;
-
-                if (Color == PieceColor.White)
-                {
-                    board[X, Y].WhiteOccupied();
-                }
-                else
-                {
-                    board[X, Y].BlackOccupied();
-                }
 
                 return true;
             }

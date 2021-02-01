@@ -24,11 +24,11 @@ namespace Chess.Tests
             Assert.IsFalse(pawn.Move(1, 6, board));
 
             Assert.IsTrue(pawn.Move(2, 6, board));
-            Assert.IsTrue(board[2, 6].OccupiedBy == PieceColor.White);
-            Assert.IsNull(board[1, 1].OccupiedBy);
+            Assert.IsTrue(board[2, 6].Color == PieceColor.White);
+            Assert.IsNull(board[1, 1]);
 
             var pawn1 = new Pawn(2, 1, PieceColor.White);
-            board[2, 2].BlackOccupied();
+            board.Occupy(2, 2, pawn1);
             Assert.IsFalse(pawn1.Move(2, 3, board));
         }
 
@@ -47,11 +47,11 @@ namespace Chess.Tests
             Assert.IsFalse(pawn.Move(5, 1, board));
 
             Assert.IsTrue(pawn.Move(2, 1, board));
-            Assert.IsTrue(board[2, 1].OccupiedBy == PieceColor.Black);
-            Assert.IsNull(board[1, 6].OccupiedBy);
+            Assert.IsTrue(board[2, 1].Color == PieceColor.Black);
+            Assert.IsNull(board[1, 6]);
 
             var pawn1 = new Pawn(2, 6, PieceColor.White);
-            board[2, 5].BlackOccupied();
+            board.Occupy(2, 5, new Pawn(2, 5, PieceColor.Black));
             Assert.IsFalse(pawn1.Move(2, 4, board));
         }
     }

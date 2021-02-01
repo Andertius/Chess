@@ -9,7 +9,7 @@ namespace Chess.Core.Pieces
 
         public override bool IsValidMove(int newX, int newY, Board board)
         {
-            if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY].OccupiedBy)
+            if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY]?.Color)
             {
                 for (int i = 0; X + i < 8 && Y + i < 8; i++)
                 {
@@ -71,7 +71,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X + 1, j = Y + 1; i < newX; i++, j++)
             {
-                if (!(board[i, j].OccupiedBy is null))
+                if (!(board[i, j] is null))
                 {
                     return false;
                 }
@@ -84,7 +84,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X + 1, j = Y - 1; i < newX; i++, j--)
             {
-                if (!(board[i, j].OccupiedBy is null))
+                if (!(board[i, j] is null))
                 {
                     return false;
                 }
@@ -97,7 +97,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X - 1, j = Y - 1; i < newX; i--, j--)
             {
-                if (!(board[i, j].OccupiedBy is null))
+                if (!(board[i, j] is null))
                 {
                     return false;
                 }
@@ -110,7 +110,7 @@ namespace Chess.Core.Pieces
         {
             for (int i = X - 1, j = Y + 1; i < newX; i--, j++)
             {
-                if (!(board[i, j].OccupiedBy is null))
+                if (!(board[i, j] is null))
                 {
                     return false;
                 }
