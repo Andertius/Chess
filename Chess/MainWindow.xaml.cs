@@ -22,7 +22,41 @@ namespace Chess
     {
         public MainWindow()
         {
+            DataContext = this;
             InitializeComponent();
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    var rect = new Rectangle();
+                    BoardGrid.Children.Add(rect);
+
+                    if (i % 2 == 0 && j % 2 == 0)
+                    {
+                        rect.Fill = new SolidColorBrush(Color.FromRgb(238, 238, 210));
+                        rect.Stroke = new SolidColorBrush(Color.FromRgb(238, 238, 210));
+                    }
+                    else if (i % 2 == 0 && j % 2 == 1)
+                    {
+                        rect.Fill = new SolidColorBrush(Color.FromRgb(118, 150, 86));
+                        rect.Stroke = new SolidColorBrush(Color.FromRgb(118, 150, 86));
+                    }
+                    else if (i % 2 == 1 && j % 2 == 0)
+                    {
+                        rect.Fill = new SolidColorBrush(Color.FromRgb(118, 150, 86));
+                        rect.Stroke = new SolidColorBrush(Color.FromRgb(118, 150, 86));
+                    }
+                    else if (i % 2 == 1 && j % 2 == 1)
+                    {
+                        rect.Fill = new SolidColorBrush(Color.FromRgb(238, 238, 210));
+                        rect.Stroke = new SolidColorBrush(Color.FromRgb(238, 238, 210));
+                    }
+
+                    Grid.SetRow(rect, i);
+                    Grid.SetColumn(rect, j);
+                }
+            }
         }
     }
 }
