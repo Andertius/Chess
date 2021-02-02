@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using Chess.Core.Pieces;
 
@@ -20,6 +21,21 @@ namespace Chess.Core
             FillBlack();
 
             CheckForProtection();
+        }
+
+        public Board(Board board)
+        {
+            GameBoard = new List<List<Square>>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                GameBoard.Add(new List<Square>());
+
+                for (int j = 0; j < 8; j++)
+                {
+                    GameBoard[i].Add(new Square(board.GameBoard[i][j]));
+                }
+            }
         }
 
         public List<List<Square>> GameBoard { get; }
@@ -56,6 +72,38 @@ namespace Chess.Core
                     }
                 }
             }
+        }
+
+        public bool CheckForWhiteCheck()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (GameBoard[i][j].OccupiedBy?.Color == PieceColor.White && GameBoard[i][j].OccupiedBy is King && GameBoard[i][j].IsBlackProtected)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool CheckForBlackCheck()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (GameBoard[i][j].OccupiedBy?.Color == PieceColor.Black && GameBoard[i][j].OccupiedBy is King && GameBoard[i][j].IsWhiteProtected)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public override string ToString()
@@ -106,7 +154,8 @@ namespace Chess.Core
             {
                 for (int j = 2; j < 6; j++)
                 {
-                    GameBoard[i].Add(new Square(null));
+                    GameBoard[i].Add(new Square(new Pawn(-1, -1, PieceColor.Black)));
+                    GameBoard[i][j].Occupy(null);
                 }
             }
         }
@@ -131,8 +180,8 @@ namespace Chess.Core
             GameBoard[2].Add(new Square(new Bishop(2, 7, PieceColor.Black)));
             GameBoard[5].Add(new Square(new Bishop(5, 7, PieceColor.Black)));
 
-            GameBoard[4].Add(new Square(new King(3, 7, PieceColor.Black)));
-            GameBoard[3].Add(new Square(new Queen(4, 7, PieceColor.Black)));
+            GameBoard[3].Add(new Square(new Queen(3, 7, PieceColor.Black)));
+            GameBoard[4].Add(new Square(new King(4, 7, PieceColor.Black)));
         }
 
         private void UnportectEverything()

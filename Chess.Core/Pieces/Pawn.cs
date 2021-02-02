@@ -11,10 +11,18 @@ namespace Chess.Core.Pieces
 
         public bool IsPromoted { get; private set; }
 
-        public override bool Move(int newX, int newY, Board board)
+        public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
+            if (!isMock && CheckForChecksAfterMove(newX, newY, board))
+            {
+                capturedPiece = null;
+                return false;
+            }
+
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
+                capturedPiece = board[newX, newY]?.OccupiedBy;
+
                 Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);
                 Board.Occupy(board[X, Y], null);
 
@@ -32,6 +40,7 @@ namespace Chess.Core.Pieces
                 return true;
             }
 
+            capturedPiece = null;
             return false;
         }
 

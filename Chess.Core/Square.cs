@@ -13,6 +13,34 @@ namespace Chess.Core
             OccupiedBy = piece;
         }
 
+        public Square(Square sq)
+        {
+            if (sq.OccupiedBy is Bishop)
+            {
+                OccupiedBy = new Bishop(sq.OccupiedBy.X, sq.OccupiedBy.Y, sq.OccupiedBy.Color);
+            }
+            else if (sq.OccupiedBy is King)
+            {
+                OccupiedBy = new King(sq.OccupiedBy.X, sq.OccupiedBy.Y, sq.OccupiedBy.Color);
+            }
+            else if (sq.OccupiedBy is Knight)
+            {
+                OccupiedBy = new Knight(sq.OccupiedBy.X, sq.OccupiedBy.Y, sq.OccupiedBy.Color);
+            }
+            else if (sq.OccupiedBy is Pawn)
+            {
+                OccupiedBy = new Pawn(sq.OccupiedBy.X, sq.OccupiedBy.Y, sq.OccupiedBy.Color);
+            }
+            else if (sq.OccupiedBy is Queen)
+            {
+                OccupiedBy = new Queen(sq.OccupiedBy.X, sq.OccupiedBy.Y, sq.OccupiedBy.Color);
+            }
+            else if (sq.OccupiedBy is Rook)
+            {
+                OccupiedBy = new Rook(sq.OccupiedBy.X, sq.OccupiedBy.Y, sq.OccupiedBy.Color);
+            }
+        }
+
         public ChessPiece OccupiedBy { get; private set; }
 
         public bool IsWhiteProtected { get; set; }
@@ -50,9 +78,17 @@ namespace Chess.Core
             //return IsWhiteProtected ? "1" : "0";
         }
 
-        public bool Move(int x, int y, Board board)
+        public bool Move(int x, int y, Board board, out ChessPiece capturedPiece, bool isMock)
         {
-            return OccupiedBy?.Move(x, y, board) ?? false;
+            if (OccupiedBy is null)
+            {
+                capturedPiece = null;
+                return false;
+            }
+            else
+            {
+                return OccupiedBy.Move(x, y, board, out capturedPiece, isMock);
+            }
         }
     }
 }
