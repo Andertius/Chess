@@ -50,7 +50,7 @@ namespace Chess.Core.Pieces
             {
                 if (newY == Y + 1 && (newX == X + 1 || newX == X - 1) &&
                     (!(board[X + 1, Y + 1].OccupiedBy is null) && board[X + 1, Y + 1].OccupiedBy.Color != Color ||
-                    !(board[X + 1, Y + 1].OccupiedBy is null) && board[X - 1, Y + 1].OccupiedBy.Color != Color))
+                    !(board[X - 1, Y + 1].OccupiedBy is null) && board[X - 1, Y + 1].OccupiedBy.Color != Color))
                 {
                     return true;
                 }
@@ -74,7 +74,7 @@ namespace Chess.Core.Pieces
             {
                 if (newY == Y - 1 && (newX == X + 1 || newX == X - 1) &&
                     (!(board[X + 1, Y - 1].OccupiedBy is null) && board[X + 1, Y - 1].OccupiedBy.Color != Color ||
-                    !(board[X + 1, Y - 1].OccupiedBy is null) && board[X - 1, Y - 1].OccupiedBy.Color != Color))
+                    !(board[X - 1, Y - 1].OccupiedBy is null) && board[X - 1, Y - 1].OccupiedBy.Color != Color))
                 {
                     return true;
                 }

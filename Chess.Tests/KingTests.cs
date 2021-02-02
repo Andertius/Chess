@@ -63,6 +63,10 @@ namespace Chess.Tests
 
             Assert.IsTrue(board.CheckForWhiteCheck());
 
+            board[6, 1].Move(5, 2, board, out _, false);
+
+            Debug.WriteLine(board);
+
             board[1, 0].Move(2, 2, board, out _, false);
             board[2, 2].Move(3, 4, board, out _, false);
             board[3, 4].Move(5, 5, board, out _, false);
