@@ -4,6 +4,9 @@ namespace Chess.Core.Pieces
 {
     public class Pawn : ChessPiece, IEquatable<Pawn>
     {
+        private bool enPassant;
+        private int enPassantMoveNum = 0;
+
         public Pawn(int x, int y, PieceColor color)
             : base(x, y, color, 1)
         {
@@ -14,7 +17,27 @@ namespace Chess.Core.Pieces
 
         public bool IsPromoted { get; private set; }
 
-        public bool CanBeEnPassanted { get; private set; }
+        public bool CanBeEnPassanted {
+            get
+            {
+                return enPassant;
+            }
+            set
+            {
+                if (value == true)
+                {
+                    enPassant = value;
+                    enPassantMoveNum++;
+                    return;
+                }
+                else if (enPassantMoveNum == 0)
+                {
+                    enPassant = value;
+                }
+
+                enPassantMoveNum = 0;
+            }
+        }
 
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {

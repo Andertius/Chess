@@ -44,9 +44,13 @@ namespace Chess.Core
             {
                 if (Board[e.X, e.Y].Move(e.NewX, e.NewY, Board, out var capturedPiece, false))
                 {
-                    if (!(capturedPiece is null))
+                    if (!(capturedPiece is null) && Turn == PieceColor.White)
                     {
                         WhiteCaptured.Add(capturedPiece);
+                    }
+                    else if (!(capturedPiece is null) && Turn == PieceColor.Black)
+                    {
+                        BlackCaptured.Add(capturedPiece);
                     }
 
                     e.Moved = true;
@@ -67,6 +71,8 @@ namespace Chess.Core
                     {
                         IsOnStalemate = true;
                     }
+
+                    Board.UnEnPassantAllPawns();
                 }
             }
         }

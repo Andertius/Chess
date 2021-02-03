@@ -97,6 +97,20 @@ namespace Chess.Core
             return false;
         }
 
+        public void UnEnPassantAllPawns()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 1; j < 7; j++)
+                {
+                    if (GameBoard[i][j].OccupiedBy is Pawn pawn)
+                    {
+                        pawn.CanBeEnPassanted = false;
+                    }
+                }
+            }
+        }
+
         public bool CheckIfHasValidMoves(PieceColor color)
         {
             for (int i = 0; i < 8; i++)
