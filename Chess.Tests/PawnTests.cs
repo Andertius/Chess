@@ -54,5 +54,35 @@ namespace Chess.Tests
             Board.Occupy(board[2, 5], new Pawn(2, 5, PieceColor.Black));
             Assert.IsFalse(pawn1.Move(2, 4, board, out _, false));
         }
+
+        [TestMethod]
+        public void WhitePawnEnPassants()
+        {
+            var board = new Board();
+            var pawn = board[1, 1].OccupiedBy as Pawn;
+
+            Assert.IsTrue(pawn.Move(1, 3, board, out _, false));
+            Assert.IsTrue(pawn.Move(1, 4, board, out _, false));
+
+            Assert.IsTrue(board[0, 6].Move(0, 4, board, out _, false));
+            Assert.IsTrue(pawn.Move(0, 5, board, out _, false));
+
+            Assert.IsFalse(pawn.CanBeEnPassanted);
+        }
+
+        [TestMethod]
+        public void BlackPawnEnPassants()
+        {
+            var board = new Board();
+            var pawn = board[1, 6].OccupiedBy as Pawn;
+
+            Assert.IsTrue(pawn.Move(1, 4, board, out _, false));
+            Assert.IsTrue(pawn.Move(1, 3, board, out _, false));
+
+            Assert.IsTrue(board[0, 1].Move(0, 3, board, out _, false));
+            Assert.IsTrue(pawn.Move(0, 2, board, out _, false));
+
+            Assert.IsFalse(pawn.CanBeEnPassanted);
+        }
     }
 }
