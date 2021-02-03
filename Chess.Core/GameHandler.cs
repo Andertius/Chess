@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 using Chess.Core.Pieces;
@@ -12,7 +13,7 @@ namespace Chess.Core
             WhiteCaptured = new ObservableCollection<ChessPiece>();
             BlackCaptured = new ObservableCollection<ChessPiece>();
             Board = new Board();
-            IsWhitesTurn = true;
+            Turn = PieceColor.White;
         }
 
         public ObservableCollection<ChessPiece> WhiteCaptured { get; }
@@ -25,15 +26,21 @@ namespace Chess.Core
 
         public int TotalBlackValue => BlackCaptured.Select(x => x.Value).Sum();
 
-        public bool IsWhitesTurn { get; private set; }
+        public PieceColor Turn { get; private set; }
 
         public bool IsWhiteUnderCheck { get; private set; }
 
         public bool IsBlackUnderCheck { get; private set; }
 
+        public bool IsOnStalemate { get; private set; }
+
+        public bool WhiteWon { get; private set; }
+
+        public bool BlackWon { get; private set; }
+
         public void Move(object sender, MoveEventArgs e)
         {
-            if (IsWhitesTurn && Board[e.X, e.Y].OccupiedBy?.Color == PieceColor.White)
+            if (Board[e.X, e.Y].OccupiedBy?.Color == Turn)
             {
                 if (Board[e.X, e.Y].Move(e.NewX, e.NewY, Board, out var capturedPiece, false))
                 {
@@ -42,21 +49,24 @@ namespace Chess.Core
                         WhiteCaptured.Add(capturedPiece);
                     }
 
-                    IsWhitesTurn = !IsWhitesTurn;
                     e.Moved = true;
-                }
-            }
-            else if (!IsWhitesTurn && Board[e.X, e.Y].OccupiedBy?.Color == PieceColor.Black)
-            {
-                if (Board[e.X, e.Y].Move(e.NewX, e.NewY, Board, out var capturedPiece, false))
-                {
-                    if (!(capturedPiece is null))
-                    {
-                        BlackCaptured.Add(capturedPiece); 
-                    }
+                    Turn = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
-                    IsWhitesTurn = !IsWhitesTurn;
-                    e.Moved = true;
+                    if (Board.CheckForCheck(Turn) && !Board.CheckIfHasValidMoves(Turn))
+                    {
+                        if (Turn == PieceColor.Black)
+                        {
+                            WhiteWon = true;
+                        }
+                        else
+                        {
+                            BlackWon = true;
+                        }
+                    }
+                    else if (!Board.CheckIfHasValidMoves(Turn))
+                    {
+                        IsOnStalemate = true;
+                    }
                 }
             }
         }

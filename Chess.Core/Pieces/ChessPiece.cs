@@ -36,14 +36,14 @@ namespace Chess.Core.Pieces
 
         public virtual bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
-            if (!isMock && CheckForChecksAfterMove(newX, newY, board))
-            {
-                capturedPiece = null;
-                return false;
-            }
-
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
+                if (!isMock && CheckForChecksAfterMove(newX, newY, board))
+                {
+                    capturedPiece = null;
+                    return false;
+                }
+
                 capturedPiece = board[newX, newY]?.OccupiedBy;
 
                 Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);
@@ -64,21 +64,28 @@ namespace Chess.Core.Pieces
 
         public virtual bool Protects(int x, int y, Board board) => true;
 
+        public bool HasValidMoves(Board board)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (IsValidMove(i, j, board) && !CheckForChecksAfterMove(i, j, board))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public bool CheckForChecksAfterMove(int newX, int newY, Board board)
         {
             var mockBoard = new Board(board);
             mockBoard[X, Y].Move(newX, newY, mockBoard, out _, true);
 
-            if (Color == PieceColor.White && mockBoard.CheckForWhiteCheck())
-            {
-                return true;
-            }
-            else if (Color == PieceColor.Black && mockBoard.CheckForBlackCheck())
-            {
-                return true;
-            }
-
-            return false;
+            return mockBoard.CheckForCheck(Color);
         }
     }
 }

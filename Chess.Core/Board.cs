@@ -74,15 +74,22 @@ namespace Chess.Core
             }
         }
 
-        public bool CheckForWhiteCheck()
+        public bool CheckForCheck(PieceColor color)
         {
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (GameBoard[i][j].OccupiedBy?.Color == PieceColor.White && GameBoard[i][j].OccupiedBy is King && GameBoard[i][j].IsBlackProtected)
+                    if (GameBoard[i][j].OccupiedBy?.Color == color && GameBoard[i][j].OccupiedBy is King)
                     {
-                        return true;
+                        if (color == PieceColor.White && GameBoard[i][j].IsBlackProtected)
+                        {
+                            return true;
+                        }
+                        else if (color == PieceColor.Black && GameBoard[i][j].IsWhiteProtected)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -90,13 +97,13 @@ namespace Chess.Core
             return false;
         }
 
-        public bool CheckForBlackCheck()
+        public bool CheckIfHasValidMoves(PieceColor color)
         {
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (GameBoard[i][j].OccupiedBy?.Color == PieceColor.Black && GameBoard[i][j].OccupiedBy is King && GameBoard[i][j].IsWhiteProtected)
+                    if (GameBoard[i][j].OccupiedBy?.Color == color && GameBoard[i][j].OccupiedBy.HasValidMoves(this))
                     {
                         return true;
                     }

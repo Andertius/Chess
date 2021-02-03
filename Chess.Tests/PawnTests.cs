@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using Chess.Core;
 using Chess.Core.Pieces;
 

@@ -5,7 +5,10 @@ namespace Chess.Core.Pieces
     public class Pawn : ChessPiece, IEquatable<Pawn>
     {
         public Pawn(int x, int y, PieceColor color)
-            : base(x, y, color, 1) { }
+            : base(x, y, color, 1)
+        {
+            CanBeEnPassanted = false;
+        }
 
         public bool IsMoved { get; private set; }
 
@@ -15,18 +18,28 @@ namespace Chess.Core.Pieces
 
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
-            if (!isMock && CheckForChecksAfterMove(newX, newY, board))
-            {
-                capturedPiece = null;
-                return false;
-            }
-
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
+                if (!isMock && CheckForChecksAfterMove(newX, newY, board))
+                {
+                    capturedPiece = null;
+                    return false;
+                }
+
                 capturedPiece = board[newX, newY]?.OccupiedBy;
 
                 Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);
                 Board.Occupy(board[X, Y], null);
+
+                if ((Color == PieceColor.White && X == newX && newY == Y + 2) ||
+                    (Color == PieceColor.Black && X == newX && newY == Y - 2))
+                {
+                    CanBeEnPassanted = true;
+                }
+                else
+                {
+                    CanBeEnPassanted = false;
+                }
 
                 X = newX;
                 Y = newY;
@@ -52,34 +65,29 @@ namespace Chess.Core.Pieces
             {
                 if (newY == Y + 1 && newX == X - 1 &&
                     (!(board[X - 1, Y + 1].OccupiedBy is null) && board[X - 1, Y + 1].OccupiedBy.Color != Color ||
-                      (board[X - 1, Y].OccupiedBy is Pawn leftPawn && leftPawn.CanBeEnPassanted)))
+                      (board[X - 1, Y].OccupiedBy is Pawn leftPawn && leftPawn.Color != Color && leftPawn.CanBeEnPassanted)))
                 {
-                    CanBeEnPassanted = false;
                     return true;
                 }
                 else if (newY == Y + 1 && newX == X + 1 &&
                          (!(board[X + 1, Y + 1].OccupiedBy is null) && board[X + 1, Y + 1].OccupiedBy.Color != Color ||
-                           (board[X + 1, Y].OccupiedBy is Pawn rightPawn && rightPawn.CanBeEnPassanted)))
+                           (board[X + 1, Y].OccupiedBy is Pawn rightPawn && rightPawn.Color != Color && rightPawn.CanBeEnPassanted)))
                 {
-                    CanBeEnPassanted = false;
                     return true;
                 }
                 else if (!IsMoved)
                 {
                     if (newY == Y + 2 && newX == X && board[X, Y + 1].OccupiedBy is null && board[X, Y + 2].OccupiedBy is null)
                     {
-                        CanBeEnPassanted = true;
                         return true;
                     }
                     else if (newY == Y + 1 && newX == X && board[X, Y + 1].OccupiedBy is null)
                     {
-                        CanBeEnPassanted = false;
                         return true;
                     }
                 }
                 else if (IsMoved && newY == Y + 1 && newX == X && board[X, Y + 1].OccupiedBy is null)
                 {
-                    CanBeEnPassanted = false;
                     return true;
                 }
             }
@@ -87,34 +95,29 @@ namespace Chess.Core.Pieces
             {
                 if (newY == Y - 1 && newX == X - 1 &&
                     (!(board[X - 1, Y - 1].OccupiedBy is null) && board[X - 1, Y - 1].OccupiedBy.Color != Color ||
-                      (board[X - 1, Y].OccupiedBy is Pawn leftPawn && leftPawn.CanBeEnPassanted)))
+                      (board[X - 1, Y].OccupiedBy is Pawn leftPawn && leftPawn.Color == PieceColor.White && leftPawn.CanBeEnPassanted)))
                 {
-                    CanBeEnPassanted = false;
                     return true;
                 }
                 else if (newY == Y - 1 && newX == X + 1 &&
                          (!(board[X + 1, Y - 1].OccupiedBy is null) && board[X + 1, Y - 1].OccupiedBy.Color != Color ||
-                           (board[X + 1, Y].OccupiedBy is Pawn rightPawn && rightPawn.CanBeEnPassanted)))
+                           (board[X + 1, Y].OccupiedBy is Pawn rightPawn && rightPawn.Color == PieceColor.White && rightPawn.CanBeEnPassanted)))
                 {
-                    CanBeEnPassanted = false;
                     return true;
                 }
                 else if (!IsMoved)
                 {
                     if (newY == Y - 2 && newX == X && board[X, Y - 1].OccupiedBy is null && board[X, Y - 2].OccupiedBy is null)
                     {
-                        CanBeEnPassanted = true;
                         return true;
                     }
                     else if (newY == Y - 1 && newX == X && board[X, Y - 1].OccupiedBy is null)
                     {
-                        CanBeEnPassanted = false;
                         return true;
                     }
                 }
                 else if (IsMoved && newY == Y - 1 && newX == X && board[X, Y - 1].OccupiedBy is null)
                 {
-                    CanBeEnPassanted = false;
                     return true;
                 }
             }
