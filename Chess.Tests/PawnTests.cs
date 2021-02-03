@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 
 using Chess.Core;
@@ -103,6 +104,26 @@ namespace Chess.Tests
             Assert.IsFalse(move.Moved);
 
             Assert.IsFalse(pawn.CanBeEnPassanted);
+        }
+
+        [TestMethod]
+        public void PawnPromoted()
+        {
+            var game = new GameHandler();
+            var pawn = game.Board[1, 1].OccupiedBy as Pawn;
+
+            static void Promote(object sender, PawnPromotionEventArgs e) => e.Piece = new Queen(e.X, 7, e.Color);
+            GameHandler.PromotionRequested += Promote;
+
+            pawn.Move(1, 3, game.Board, out _, false);
+            pawn.Move(1, 4, game.Board, out _, false);
+            pawn.Move(1, 5, game.Board, out _, false);
+            pawn.Move(0, 6, game.Board, out _, false);
+            pawn.Move(1, 7, game.Board, out _, false);
+
+            Assert.IsTrue(game.Board[1, 7].OccupiedBy is Queen);
+
+            Debug.WriteLine(game.Board);
         }
     }
 }

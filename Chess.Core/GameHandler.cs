@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -14,6 +16,8 @@ namespace Chess.Core
             BlackCaptured = new ObservableCollection<ChessPiece>();
             Board = new Board();
             Turn = PieceColor.White;
+            MoveHistory = new List<(MoveDisplay, MoveDisplay)>();
+            Loser = null;
         }
 
         public ObservableCollection<ChessPiece> WhiteCaptured { get; }
@@ -22,9 +26,15 @@ namespace Chess.Core
 
         public Board Board { get; }
 
-        public int TotalWhiteValue => WhiteCaptured.Select(x => x.Value).Sum();
+        public int TotalWhiteValue => Board.GameBoard
+            .SelectMany(x => x)
+            .Where(x => x.OccupiedBy?.Color == PieceColor.White)
+            .Select(x => x.OccupiedBy.Value).Sum();
 
-        public int TotalBlackValue => BlackCaptured.Select(x => x.Value).Sum();
+        public int TotalBlackValue => Board.GameBoard
+            .SelectMany(x => x)
+            .Where(x => x.OccupiedBy?.Color == PieceColor.White)
+            .Select(x => x.OccupiedBy.Value).Sum();
 
         public PieceColor Turn { get; private set; }
 
@@ -34,37 +44,84 @@ namespace Chess.Core
 
         public bool IsOnStalemate { get; private set; }
 
-        public bool WhiteWon { get; private set; }
+        public PieceColor? Loser { get; private set; }
 
-        public bool BlackWon { get; private set; }
+        public List<(MoveDisplay, MoveDisplay)> MoveHistory { get; }
+
+        public static event EventHandler<PawnPromotionEventArgs> PromotionRequested;
+
+        public static ChessPiece RequestPromotion(object sender, int x, PieceColor color)
+        {
+            var e = new PawnPromotionEventArgs(x, color);
+            PromotionRequested?.Invoke(sender, e);
+
+            return e.Piece;
+        }
 
         public void Move(object sender, MoveEventArgs e)
         {
             if (Board[e.X, e.Y].OccupiedBy?.Color == Turn)
             {
+                var move = new MoveDisplay(Board[e.X, e.Y].OccupiedBy, null, false, false, false,
+                    false, false, false, false, (e.X, e.Y), (e.NewX, e.NewY));
+
                 if (Board[e.X, e.Y].Move(e.NewX, e.NewY, Board, out var capturedPiece, false))
                 {
+                    if (Board[e.NewX, e.NewY].OccupiedBy.JustLongCastled)
+                    {
+                        move.IsLongCastle = true;
+                    }
+                    else if (Board[e.NewX, e.NewY].OccupiedBy.JustShortCastled)
+                    {
+                        move.IsShortCastle = true;
+                    }
+
+                    if (Board[e.NewX, e.NewY].OccupiedBy != move.Piece)
+                    {
+                        move.PawnPromotion = Board[e.NewX, e.NewY].OccupiedBy;
+
+                        if (Turn == PieceColor.White)
+                        {
+                            BlackCaptured.Add(new Pawn(-1, -1, PieceColor.White));
+                        }
+                        else
+                        {
+                            WhiteCaptured.Add(new Pawn(-1, -1, PieceColor.Black));
+                        }
+                    }
+
                     if (!(capturedPiece is null) && Turn == PieceColor.White)
                     {
                         WhiteCaptured.Add(capturedPiece);
+                        move.IsCapturing = true;
+
+                        var canAlsoCapture = Board.CanAlsoCapture(e.NewX, e.NewY, Turn, Board[e.NewX, e.NewY].OccupiedBy.Piece);
+                        move.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == e.NewX;
+                        move.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !move.CouldAnotherPieceCaptureSameFile;
                     }
                     else if (!(capturedPiece is null) && Turn == PieceColor.Black)
                     {
                         BlackCaptured.Add(capturedPiece);
+                        move.IsCapturing = true;
+
+                        var canAlsoCapture = Board.CanAlsoCapture(e.NewX, e.NewY, Turn, Board[e.NewX, e.NewY].OccupiedBy.Piece);
+                        move.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == e.NewX;
+                        move.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !move.CouldAnotherPieceCaptureSameFile;
                     }
 
                     e.Moved = true;
                     Turn = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
 
-                    if (Board.CheckForCheck(Turn) && !Board.CheckIfHasValidMoves(Turn))
+                    if (Board.CheckForCheck(Turn))
                     {
-                        if (Turn == PieceColor.Black)
+                        if (!Board.CheckIfHasValidMoves(Turn))
                         {
-                            WhiteWon = true;
+                            Loser = Turn;
+                            move.IsMate = true;
                         }
                         else
                         {
-                            BlackWon = true;
+                            move.IsCheck = true;
                         }
                     }
                     else if (!Board.CheckIfHasValidMoves(Turn))
@@ -73,6 +130,15 @@ namespace Chess.Core
                     }
 
                     Board.UnEnPassantAllPawns();
+
+                    if (Turn == PieceColor.Black)
+                    {
+                        MoveHistory.Add((move, null));
+                    }
+                    else
+                    {
+                        MoveHistory[^1] = (MoveHistory[^1].Item1, move);
+                    }
                 }
             }
         }

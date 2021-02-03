@@ -5,12 +5,13 @@ namespace Chess.Core.Pieces
 {
     public abstract class ChessPiece
     {
-        public ChessPiece(int x, int y, PieceColor color, int value)
+        public ChessPiece(int x, int y, PieceColor color, int value, Piece piece)
         {
             X = x;
             Y = y;
             Color = color;
             Value = value;
+            Piece = piece;
         }
 
         public ChessPiece(ChessPiece piece)
@@ -19,6 +20,7 @@ namespace Chess.Core.Pieces
             Y = piece.Y;
             Color = piece.Color;
             Value = piece.Value;
+            Piece = piece.Piece;
         }
 
         protected static int KingValue => 0;
@@ -26,11 +28,16 @@ namespace Chess.Core.Pieces
         protected static int RightLowerBoundary => -1;
         protected static int LeftUppeBoundary => 8;
 
+        public bool JustLongCastled { get; set; }
+        public bool JustShortCastled { get; set; }
+
         public int X { get; protected set; }
 
         public int Y { get; protected set; }
 
         public PieceColor Color { get; }
+
+        public Piece Piece { get; }
 
         public int Value { get; }
 
@@ -43,6 +50,9 @@ namespace Chess.Core.Pieces
                     capturedPiece = null;
                     return false;
                 }
+
+                JustLongCastled = false;
+                JustShortCastled = false;
 
                 capturedPiece = board[newX, newY]?.OccupiedBy;
 

@@ -80,7 +80,7 @@ namespace Chess.Core
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (GameBoard[i][j].OccupiedBy?.Color == color && GameBoard[i][j].OccupiedBy is King)
+                    if (GameBoard[i][j].OccupiedBy?.Color == color && GameBoard[i][j].OccupiedBy.Piece == Piece.King)
                     {
                         if (color == PieceColor.White && GameBoard[i][j].IsBlackProtected)
                         {
@@ -125,6 +125,26 @@ namespace Chess.Core
             }
 
             return false;
+        }
+
+        public ChessPiece CanAlsoCapture(int x, int y, PieceColor color, Piece piece)
+        {
+            var mockBoard = new Board(this);
+            mockBoard[x, y].Occupy(null);
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (mockBoard.GameBoard[i][j].OccupiedBy?.Color == color && mockBoard.GameBoard[i][j].OccupiedBy.Piece == piece &&
+                        mockBoard.GameBoard[i][j].OccupiedBy.IsValidMove(x, y, mockBoard))
+                    {
+                        return GameBoard[i][j].OccupiedBy;
+                    }
+                }
+            }
+
+            return null;
         }
 
         public override string ToString()

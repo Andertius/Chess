@@ -8,7 +8,7 @@ namespace Chess.Core.Pieces
         private int enPassantMoveNum = 0;
 
         public Pawn(int x, int y, PieceColor color)
-            : base(x, y, color, 1)
+            : base(x, y, color, 1, Piece.Pawn)
         {
             CanBeEnPassanted = false;
         }
@@ -49,6 +49,9 @@ namespace Chess.Core.Pieces
                     return false;
                 }
 
+                JustLongCastled = false;
+                JustShortCastled = false;
+
                 capturedPiece = board[newX, newY]?.OccupiedBy;
 
                 Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);
@@ -71,7 +74,7 @@ namespace Chess.Core.Pieces
 
                 if (Y == 7)
                 {
-                    Promote();
+                    Promote(board);
                 }
 
                 board.CheckForProtection();
@@ -183,9 +186,9 @@ namespace Chess.Core.Pieces
                 Value == pawn.Value && IsMoved == pawn.IsMoved;
         }
 
-        private void Promote()
+        private void Promote(Board board)
         {
-            throw new NotImplementedException();
+            board[X, 7].Occupy(GameHandler.RequestPromotion(this, X, Color));
         }
     }
 }

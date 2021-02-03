@@ -5,7 +5,7 @@ namespace Chess.Core.Pieces
     public class Bishop : ChessPiece, IEquatable<Bishop>
     {
         public Bishop(int x, int y, PieceColor color)
-            : base(x, y, color, 3) { }
+            : base(x, y, color, 3, Piece.Bishop) { }
 
         public override bool IsValidMove(int newX, int newY, Board board)
         {

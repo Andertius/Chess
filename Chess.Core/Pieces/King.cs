@@ -8,7 +8,7 @@ namespace Chess.Core.Pieces
         private bool isCasltingRight;
 
         public King(int x, int y, PieceColor color)
-            : base(x, y, color, KingValue) { }
+            : base(x, y, color, KingValue, Piece.King) { }
 
         public bool IsMoved { get; private set; }
 
@@ -16,17 +16,22 @@ namespace Chess.Core.Pieces
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
+                JustLongCastled = false;
+                JustShortCastled = false;
+
                 if (isCasltingRight)
                 {
                     if (Color == PieceColor.White)
                     {
                         var rook = (Rook)board[7, 0].OccupiedBy;
                         rook.Castle(true, board);
+                        JustShortCastled = true;
                     }
                     else
                     {
                         var rook = (Rook)board[0, 7].OccupiedBy;
                         rook.Castle(true, board);
+                        JustLongCastled = true;
                     }
                 }
                 else if (isCasltingLeft)
@@ -35,11 +40,13 @@ namespace Chess.Core.Pieces
                     {
                         var rook = (Rook)board[0, 0].OccupiedBy;
                         rook.Castle(false, board);
+                        JustLongCastled = true;
                     }
                     else
                     {
                         var rook = (Rook)board[7, 7].OccupiedBy;
                         rook.Castle(false, board);
+                        JustShortCastled = true;
                     }
                 }
 

@@ -5,20 +5,23 @@ namespace Chess.Core.Pieces
     public class Rook : ChessPiece, IEquatable<Rook>
     {
         public Rook(int x, int y, PieceColor color)
-            : base(x, y, color, 5) { }
+            : base(x, y, color, 5, Piece.Rook) { }
 
         public bool IsMoved { get; private set; }
 
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
-            if (!isMock && CheckForChecksAfterMove(newX, newY, board))
-            {
-                capturedPiece = null;
-                return false;
-            }
-
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
             {
+                if (!isMock && CheckForChecksAfterMove(newX, newY, board))
+                {
+                    capturedPiece = null;
+                    return false;
+                }
+
+                JustLongCastled = false;
+                JustShortCastled = false;
+
                 capturedPiece = board[newX, newY]?.OccupiedBy;
 
                 Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);

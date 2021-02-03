@@ -5,7 +5,7 @@ namespace Chess.Core.Pieces
     public class Knight : ChessPiece, IEquatable<Knight>
     {
         public Knight(int x, int y, PieceColor color)
-            : base(x, y, color, 3) { }
+            : base(x, y, color, 3, Piece.Knight) { }
 
         public override bool IsValidMove(int newX, int newY, Board board)
         {
