@@ -29,7 +29,7 @@ namespace Chess.Core.Pieces
 
         public override string ToString()
         {
-            return "k";
+            return "N";
         }
 
         public override int GetHashCode()

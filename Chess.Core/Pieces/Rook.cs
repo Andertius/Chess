@@ -7,6 +7,36 @@ namespace Chess.Core.Pieces
         public Rook(int x, int y, PieceColor color)
             : base(x, y, color, 5) { }
 
+        public bool IsMoved { get; private set; }
+
+        public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
+        {
+            if (!isMock && CheckForChecksAfterMove(newX, newY, board))
+            {
+                capturedPiece = null;
+                return false;
+            }
+
+            if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
+            {
+                capturedPiece = board[newX, newY]?.OccupiedBy;
+
+                Board.Occupy(board[newX, newY], board[X, Y].OccupiedBy);
+                Board.Occupy(board[X, Y], null);
+
+                X = newX;
+                Y = newY;
+
+                IsMoved = true;
+
+                board.CheckForProtection();
+                return true;
+            }
+
+            capturedPiece = null;
+            return false;
+        }
+
         public override bool IsValidMove(int newX, int newY, Board board)
         {
             if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY].OccupiedBy?.Color)
@@ -15,6 +45,30 @@ namespace Chess.Core.Pieces
             }
 
             return false;
+        }
+
+        public void Castle(bool isHeadingLeft, Board board)
+        {
+            if (Color == PieceColor.White)
+            {
+                int newX = isHeadingLeft ? X - 2 : X + 3;
+
+                Board.Occupy(board[newX, Y], board[X, Y].OccupiedBy);
+                Board.Occupy(board[X, Y], null);
+
+                X = newX;
+            }
+            else
+            {
+                int newX = isHeadingLeft ? X + 3 : X - 2;
+
+                Board.Occupy(board[newX, Y], board[X, Y].OccupiedBy);
+                Board.Occupy(board[X, Y], null);
+
+                X = newX;
+            }
+
+            IsMoved = true;
         }
 
         public override bool Protects(int x, int y, Board board)

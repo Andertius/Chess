@@ -23,6 +23,9 @@ namespace Chess.Core.Pieces
 
         protected static int KingValue => 0;
 
+        protected static int RightLowerBoundary => -1;
+        protected static int LeftUppeBoundary => 8;
+
         public int X { get; protected set; }
 
         public int Y { get; protected set; }
