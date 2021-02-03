@@ -9,3 +9,5 @@ A full-fledged two-player chess app with UI.
 4. Checks and pinned pieces
 5. Castling
 6. En Passants
+7. Checkmates
+8. Stalemates
