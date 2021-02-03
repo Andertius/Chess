@@ -11,3 +11,5 @@ A full-fledged two-player chess app with UI.
 6. En Passants
 7. Checkmates
 8. Stalemates
+9. Pawn promotion
+10. Move history
