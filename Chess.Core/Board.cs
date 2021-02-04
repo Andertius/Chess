@@ -6,8 +6,14 @@ using Chess.Core.Pieces;
 
 namespace Chess.Core
 {
+    /// <summary>
+    /// Represents a chess board.
+    /// </summary>
     public class Board : IEquatable<Board>
     {
+        /// <summary>
+        /// Initializes a new <see cref="Board"/> class with the dafault piece positions.
+        /// </summary>
         public Board()
         {
             GameBoard = new List<List<Square>>();
@@ -24,6 +30,10 @@ namespace Chess.Core
             CheckForProtection();
         }
 
+        /// <summary>
+        /// Initializes a new <see cref="Board"/> class with the piece positions that are taken from the given <paramref name="board"/>.
+        /// </summary>
+        /// <param name="board">The board from which the pieces are copied.</param>
         public Board(Board board)
         {
             GameBoard = new List<List<Square>>();
@@ -39,17 +49,30 @@ namespace Chess.Core
             }
         }
 
-        internal List<List<Square>> GameBoard { get; }
+        /// <summary>
+        /// Gets the board itself.
+        /// </summary>
+        public List<List<Square>> GameBoard { get; }
 
-        internal Square this [int index, int jndex]
+        /// <summary>
+        /// Gets the <see cref="Square"/> with the given coordinates.
+        /// </summary>
+        /// <returns></returns>
+        public Square this [int index, int jndex]
             => GameBoard[index][jndex];
 
-        internal static void Occupy(Square square, ChessPiece piece)
+        /// <summary>
+        /// Occupies the given <see cref="Square"/> with the given <see cref="ChessPiece"/>.
+        /// </summary>
+        public static void Occupy(Square square, ChessPiece piece)
         {
             square.Occupy(piece);
         }
 
-        internal void CheckForProtection()
+        /// <summary>
+        /// Checks the entire board, to determine the squares that are protected.
+        /// </summary>
+        public void CheckForProtection()
         {
             UnportectEverything();
 
@@ -75,7 +98,13 @@ namespace Chess.Core
             }
         }
 
-        internal bool CheckForCheck(PieceColor color)
+        /// <summary>
+        /// Checks whether either of the kings are in check.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if one of the kings are in check; otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool CheckForCheck(PieceColor color)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -98,7 +127,10 @@ namespace Chess.Core
             return false;
         }
 
-        internal void UnEnPassantAllPawns()
+        /// <summary>
+        /// Makes all pawns that were not captured by an en passant move not available for an en passant capture.
+        /// </summary>
+        public void UnEnPassantAllPawns()
         {
             for (int i = 0; i < 8; i++)
             {
@@ -112,7 +144,14 @@ namespace Chess.Core
             }
         }
 
-        internal bool CheckIfHasValidMoves(PieceColor color)
+        /// <summary>
+        /// Checks if a player with the given color has any valid moves.
+        /// </summary>
+        /// <param name="color">The color of the player.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player has at least one valid move; otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool CheckIfHasValidMoves(PieceColor color)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -128,7 +167,17 @@ namespace Chess.Core
             return false;
         }
 
-        internal ChessPiece CanAlsoCapture(int x, int y, PieceColor color, Piece piece)
+        /// <summary>
+        /// Checks if another same <see cref="ChessPiece"/> could capture the given <see cref="Square"/>.
+        /// </summary>
+        /// <param name="x">The file of the square.</param>
+        /// <param name="y">The rank of the square.</param>
+        /// <param name="color">The color of the pieces to check.</param>
+        /// <param name="piece">The pieces that should be checked.</param>
+        /// <returns>
+        /// The <see cref="ChessPiece"/> that could make a capture; <see langword="null"/> if none of the pieces could capture.
+        /// </returns>
+        public ChessPiece CanAlsoCapture(int x, int y, PieceColor color, Piece piece)
         {
             var mockBoard = new Board(this);
             mockBoard[x, y].Occupy(null);
@@ -148,6 +197,7 @@ namespace Chess.Core
             return null;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             string result = "";
@@ -166,16 +216,19 @@ namespace Chess.Core
             return result;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is Board board && Equals(board);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(GameBoard);
         }
 
+        /// <inheritdoc/>
         public bool Equals(Board board)
         {
             for (int i = 0; i < 8; i++)

@@ -2,16 +2,24 @@
 
 namespace Chess.Core.Pieces
 {
+    /// <summary>
+    /// Represents the <see cref="King"/> piece and is derived from the <see cref="ChessPiece"/> class.
+    /// </summary>
     public class King : ChessPiece, IEquatable<King>
     {
         private bool isCasltingLeft;
         private bool isCasltingRight;
 
+        /// <inheritdoc/>
         public King(int x, int y, PieceColor color)
             : base(x, y, color, KingValue, Piece.King) { }
 
+        /// <summary>
+        /// Gets the value that indicates whether the <see cref="King"/> piece was moved before.
+        /// </summary>
         public bool IsMoved { get; private set; }
 
+        /// <inheritdoc/>
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
@@ -68,6 +76,7 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool IsValidMove(int newX, int newY, Board board)
         {
             if ((Color == PieceColor.White && !board[newX, newY].IsBlackProtected) ||
@@ -82,6 +91,7 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool Protects(int x, int y, Board board)
         {
             if ((x != X || y != Y) && x < 8 && y < 8 && x > -1 && y > -1)
@@ -92,21 +102,25 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "K";
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Value, Color);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is King king && Equals(king);
         }
 
+        /// <inheritdoc/>
         public bool Equals(King king)
         {
             return !(king is null) && X == king.X && Y == king.Y && Value == king.Value && Color == king.Color && IsMoved == king.IsMoved;

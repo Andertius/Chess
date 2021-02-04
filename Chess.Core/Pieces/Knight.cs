@@ -2,11 +2,16 @@
 
 namespace Chess.Core.Pieces
 {
+    /// <summary>
+    /// Represents the <see cref="Knight"/> piece and is derived from the <see cref="ChessPiece"/> class.
+    /// </summary>
     public class Knight : ChessPiece, IEquatable<Knight>
     {
+        /// <inheritdoc/>
         public Knight(int x, int y, PieceColor color)
             : base(x, y, color, 3, Piece.Knight) { }
-
+        
+        /// <inheritdoc/>
         public override bool IsValidMove(int newX, int newY, Board board)
         {
             if (newX < 8 && newY < 8 && newX > -1 && newY > -1 && Color != board[newX, newY].OccupiedBy?.Color)
@@ -17,6 +22,7 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool Protects(int x, int y, Board board)
         {
             if ((x != X || y != Y) && x < 8 && y < 8 && x > -1 && y > -1)
@@ -27,21 +33,25 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "N";
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Color, Value);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is Knight knight && Equals(knight);
         }
 
+        /// <inheritdoc/>
         public bool Equals(Knight knight)
         {
             return !(knight is null) && X == knight.X && Y == knight.Y && Value == knight.Value && Color == knight.Color;

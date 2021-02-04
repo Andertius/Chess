@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Chess.Core.Pieces;
 
 namespace Chess.Core
 {
+    /// <summary>
+    /// Represents a single square on the <see cref="Board"/>.
+    /// </summary>
     public class Square : IEquatable<Square>
     {
+        /// <summary>
+        /// Initializes an instance of a <see cref="Square"/> with the <paramref name="piece"/> inside.
+        /// </summary>
+        /// <param name="piece">The piece inside of the square.</param>
         public Square(ChessPiece piece)
         {
             OccupiedBy = piece;
         }
 
+        /// <summary>
+        /// Initializes a completely new <see cref="Square"/> with a copied <see cref="ChessPiece"/>.
+        /// </summary>
+        /// <param name="sq">The square to copy the <see cref="ChessPiece"/> from.</param>
         public Square(Square sq)
         {
             if (sq.OccupiedBy is Bishop)
@@ -41,17 +51,38 @@ namespace Chess.Core
             }
         }
 
+        /// <summary>
+        /// Gets the <see cref="ChessPiece"/> that is occupying the <see cref="Square"/>.
+        /// </summary>
         public ChessPiece OccupiedBy { get; private set; }
 
+        /// <summary>
+        /// Gets the value that indicates whether the <see cref="Square"/> is protected by a white <see cref="ChessPiece"/>.
+        /// </summary>
         public bool IsWhiteProtected { get; set; }
 
+        /// <summary>
+        /// Gets the value that indicates whether the <see cref="Square"/> is protected by a black <see cref="ChessPiece"/>.
+        /// </summary>
         public bool IsBlackProtected { get; set; }
 
+        /// <summary>
+        /// Occupies the <see cref="Square"/> by a new <see cref="ChessPiece"/>.
+        /// </summary>
+        /// <remarks>
+        /// To free up the <see cref="Square"/>, <paramref name="piece"/> has to be <see langword="null"/>.
+        /// </remarks>
+        /// <param name="piece">The piece to occupy the <see cref="Square"/> with.</param>
         public void Occupy(ChessPiece piece)
         {
             OccupiedBy = piece;
         }
 
+        /// <summary>
+        /// Returns all squares that are protected by this square.
+        /// </summary>
+        /// <param name="board">The board in which search for the squares.</param>
+        /// <returns>A <see cref="List{T}"/> with all the squares.</returns>
         public List<Square> FindProtectedSquares(Board board)
         {
             var result = new List<Square>();
@@ -70,6 +101,16 @@ namespace Chess.Core
             return result;
         }
 
+        /// <summary>
+        /// Moves the <see cref="ChessPiece"/> that occupies this <see cref="Square"/> into another if it is a valid move,
+        /// freeing up this <see cref="Square"/>.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="board"></param>
+        /// <param name="capturedPiece"></param>
+        /// <param name="isMock"></param>
+        /// <returns></returns>
         public bool Move(int x, int y, Board board, out ChessPiece capturedPiece, bool isMock)
         {
             if (OccupiedBy is null)
@@ -83,21 +124,25 @@ namespace Chess.Core
             }
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return OccupiedBy?.ToString() ?? "0";
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is Square sq && Equals(sq);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(OccupiedBy, IsWhiteProtected, IsBlackProtected);
         }
 
+        /// <inheritdoc/>
         public bool Equals(Square sq)
         {
             bool chessPpiecesAreSame;

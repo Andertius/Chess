@@ -132,7 +132,7 @@ namespace Chess.Tests
             Debug.WriteLine(game.Board);
 
             Assert.IsTrue(game.Winner == PieceColor.White);
-            Assert.IsFalse(game.IsOnStalemate);
+            Assert.IsFalse(game.IsInStalemate);
         }
 
         [TestMethod]
@@ -158,7 +158,7 @@ namespace Chess.Tests
             Debug.WriteLine(game.Board);
 
             Assert.IsTrue(game.Winner == PieceColor.Black);
-            Assert.IsFalse(game.IsOnStalemate);
+            Assert.IsFalse(game.IsInStalemate);
         }
 
         [TestMethod]
@@ -186,7 +186,7 @@ namespace Chess.Tests
             game.Move(this, new MoveEventArgs(5, 6, 6, 5));
             game.Move(this, new MoveEventArgs(2, 7, 4, 5));
 
-            Assert.IsTrue(game.IsOnStalemate);
+            Assert.IsTrue(game.IsInStalemate);
             Assert.IsNull(game.Winner);
         }
 
@@ -277,7 +277,7 @@ namespace Chess.Tests
                 game.Move(this, new MoveEventArgs(2, 5, 1, 7));
             }
 
-            Assert.IsTrue(game.IsOnStalemate);
+            Assert.IsTrue(game.IsInStalemate);
         }
     }
 }

@@ -2,19 +2,29 @@
 
 namespace Chess.Core.Pieces
 {
+    /// <summary>
+    /// Represents the <see cref="Pawn"/> piece and is derived from the <see cref="ChessPiece"/> class.
+    /// </summary>
     public class Pawn : ChessPiece, IEquatable<Pawn>
     {
         private bool enPassant;
         private int enPassantMoveNum = 0;
 
+        /// <inheritdoc/>
         public Pawn(int x, int y, PieceColor color)
             : base(x, y, color, 1, Piece.Pawn)
         {
             CanBeEnPassanted = false;
         }
 
+        /// <summary>
+        /// Gets the value that indicates whether the <see cref="Pawn"/> was moved before.
+        /// </summary>
         public bool IsMoved { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the value that indicates whether the <see cref="Pawn"/> be captures by the en passant move.
+        /// </summary>
         public bool CanBeEnPassanted {
             get
             {
@@ -37,6 +47,7 @@ namespace Chess.Core.Pieces
             }
         }
 
+        /// <inheritdoc/>
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
@@ -83,6 +94,7 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool IsValidMove(int newX, int newY, Board board)
         {
             if (Color == PieceColor.White)
@@ -149,6 +161,7 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool Protects(int x, int y, Board board)
         {
             if (Color == PieceColor.White && (x == X + 1 && y == Y + 1 || x == X - 1 && y == Y + 1))
@@ -163,21 +176,25 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "p";
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Color, Value, IsMoved);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is Pawn pawn && Equals(pawn);
         }
 
+        /// <inheritdoc/>
         public bool Equals(Pawn pawn)
         {
             return !(pawn is null) && 

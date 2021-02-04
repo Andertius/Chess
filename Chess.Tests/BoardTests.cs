@@ -201,13 +201,13 @@ namespace Chess.Tests
             Assert.IsTrue(board[4, 6].Move(4, 4, board, out _, false));
             Assert.IsTrue(board[3, 7].Move(7, 3, board, out _, false));
 
-            Assert.IsTrue(board[5, 1].OccupiedBy.CheckForChecksAfterMove(5, 2, board));
+            Assert.IsFalse(board[5, 1].Move(5, 2, board, out _, false));
             Assert.IsTrue(board[5, 1].OccupiedBy is Pawn);
 
             Assert.IsTrue(board[4, 1].Move(4, 2, board, out _, false));
             Assert.IsTrue(board[3, 0].Move(7, 4, board, out _, false));
 
-            Assert.IsTrue(board[5, 6].OccupiedBy.CheckForChecksAfterMove(5, 5, board));
+            Assert.IsFalse(board[5, 6].Move(5, 5, board, out _, false));
             Assert.IsTrue(board[5, 6].OccupiedBy is Pawn);
         }
 

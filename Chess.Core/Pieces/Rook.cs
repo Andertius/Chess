@@ -2,13 +2,22 @@
 
 namespace Chess.Core.Pieces
 {
+    /// <summary>
+    /// Represents the <see cref="Rook"/> piece and is derived from the <see cref="ChessPiece"/> class.
+    /// </summary>
     public class Rook : ChessPiece, IEquatable<Rook>
     {
+
+        /// <inheritdoc/>
         public Rook(int x, int y, PieceColor color)
             : base(x, y, color, 5, Piece.Rook) { }
 
+        /// <summary>
+        /// Gets the value that indicates whether the <see cref="Rook"/> piece was moved before.
+        /// </summary>
         public bool IsMoved { get; private set; }
 
+        /// <inheritdoc/>
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
             if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
@@ -40,17 +49,16 @@ namespace Chess.Core.Pieces
             return false;
         }
 
-        public override bool IsValidMove(int newX, int newY, Board board)
-        {
-            if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY].OccupiedBy?.Color)
-            {
-                return IsValid(newX, newY, board);
-            }
-
-            return false;
-        }
-
-        public void Castle(bool isHeadingLeft, Board board)
+        /// <summary>
+        /// Castles the <see cref="Rook"/>.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="Rook"/> will castle no matter what, so check for castling conditions before invoking this method.
+        /// </remarks>
+        /// <param name="isHeadingLeft">A value that indicates if the <see cref="Rook"/>
+        /// is going to the right or to the left in respect to the player.</param>
+        /// <param name="board">The board in which the castling is happening.</param>
+        internal void Castle(bool isHeadingLeft, Board board)
         {
             if (Color == PieceColor.White)
             {
@@ -74,6 +82,18 @@ namespace Chess.Core.Pieces
             IsMoved = true;
         }
 
+        /// <inheritdoc/>
+        public override bool IsValidMove(int newX, int newY, Board board)
+        {
+            if (newX > -1 && newX < 8 && newY > -1 && newY < 8 && Color != board[newX, newY].OccupiedBy?.Color)
+            {
+                return IsValid(newX, newY, board);
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc/>
         public override bool Protects(int x, int y, Board board)
         {
             if ((x != X || y != Y) && x > -1 && x < 8 && y > -1 && y < 8)
@@ -84,21 +104,25 @@ namespace Chess.Core.Pieces
             return false;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "R";
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Color, Value);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is Rook rook && Equals(rook);
         }
 
+        /// <inheritdoc/>
         public bool Equals(Rook rook)
         {
             return !(rook is null) && X == rook.X && Y == rook.Y && Value == rook.Value && Color == rook.Color && IsMoved == rook.IsMoved;
