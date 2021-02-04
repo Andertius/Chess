@@ -15,8 +15,6 @@ namespace Chess.Core.Pieces
 
         public bool IsMoved { get; private set; }
 
-        public bool IsPromoted { get; private set; }
-
         public bool CanBeEnPassanted {
             get
             {
@@ -182,8 +180,13 @@ namespace Chess.Core.Pieces
 
         public bool Equals(Pawn pawn)
         {
-            return X == pawn.X && Y == pawn.Y && Color == pawn.Color &&
-                Value == pawn.Value && IsMoved == pawn.IsMoved;
+            return !(pawn is null) && 
+                X == pawn.X &&
+                Y == pawn.Y &&
+                Color == pawn.Color &&
+                Value == pawn.Value &&
+                IsMoved == pawn.IsMoved &&
+                CanBeEnPassanted == pawn.CanBeEnPassanted;
         }
 
         private void Promote(Board board)

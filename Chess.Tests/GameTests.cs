@@ -131,7 +131,7 @@ namespace Chess.Tests
 
             Debug.WriteLine(game.Board);
 
-            Assert.IsTrue(game.Loser == PieceColor.Black);
+            Assert.IsTrue(game.Winner == PieceColor.White);
             Assert.IsFalse(game.IsOnStalemate);
         }
 
@@ -157,7 +157,7 @@ namespace Chess.Tests
 
             Debug.WriteLine(game.Board);
 
-            Assert.IsTrue(game.Loser == PieceColor.White);
+            Assert.IsTrue(game.Winner == PieceColor.Black);
             Assert.IsFalse(game.IsOnStalemate);
         }
 
@@ -187,7 +187,7 @@ namespace Chess.Tests
             game.Move(this, new MoveEventArgs(2, 7, 4, 5));
 
             Assert.IsTrue(game.IsOnStalemate);
-            Assert.IsNull(game.Loser);
+            Assert.IsNull(game.Winner);
         }
 
         [TestMethod]
@@ -235,33 +235,49 @@ namespace Chess.Tests
             game.Move(this, new MoveEventArgs(4, 3, 6, 2));
             game.Move(this, new MoveEventArgs(4, 0, 4, 4));
 
-            Assert.AreEqual("e4", game.MoveHistory[0].Item1.ToString());
-            Assert.AreEqual("e5", game.MoveHistory[0].Item2.ToString());
-            Assert.AreEqual("Nc3", game.MoveHistory[1].Item1.ToString());
-            Assert.AreEqual("Nf6", game.MoveHistory[1].Item2.ToString());
-            Assert.AreEqual("Qf3", game.MoveHistory[2].Item1.ToString());
-            Assert.AreEqual("Bc5", game.MoveHistory[2].Item2.ToString());
-            Assert.AreEqual("d3", game.MoveHistory[3].Item1.ToString());
-            Assert.AreEqual("O-O", game.MoveHistory[3].Item2.ToString());
-            Assert.AreEqual("Bg5", game.MoveHistory[4].Item1.ToString());
-            Assert.AreEqual("h6", game.MoveHistory[4].Item2.ToString());
-            Assert.AreEqual("O-O-O", game.MoveHistory[5].Item1.ToString());
-            Assert.AreEqual("hxg5", game.MoveHistory[5].Item2.ToString());
-            Assert.AreEqual("Qxf6", game.MoveHistory[6].Item1.ToString());
-            Assert.AreEqual("a5", game.MoveHistory[6].Item2.ToString());
-            Assert.AreEqual("Qxg7+", game.MoveHistory[7].Item1.ToString());
-            Assert.AreEqual("Kxg7", game.MoveHistory[7].Item2.ToString());
-            Assert.AreEqual("Nf3", game.MoveHistory[8].Item1.ToString());
-            Assert.AreEqual("Bxf2", game.MoveHistory[8].Item2.ToString());
-            Assert.AreEqual("Nb5", game.MoveHistory[9].Item1.ToString());
-            Assert.AreEqual("g4", game.MoveHistory[9].Item2.ToString());
-            Assert.AreEqual("Na7", game.MoveHistory[10].Item1.ToString());
-            Assert.AreEqual("g3", game.MoveHistory[10].Item2.ToString());
-            Assert.AreEqual("Nc6", game.MoveHistory[11].Item1.ToString());
-            Assert.AreEqual("gxh2", game.MoveHistory[11].Item2.ToString());
-            // Assert.AreEqual("Nfxe5", game.MoveHistory[12].Item1.ToString());
-            // Assert.AreEqual("Ncxe5", game.MoveHistory[12].Item1.ToString());
-            Assert.AreEqual("R1xe5", game.MoveHistory[16].Item1.ToString());
+            Assert.AreEqual("e4",    game.BoardStates["White"][0].ToString());
+            Assert.AreEqual("e5",    game.BoardStates["Black"][0].ToString());
+            Assert.AreEqual("Nc3",   game.BoardStates["White"][1].ToString()); 
+            Assert.AreEqual("Nf6",   game.BoardStates["Black"][1].ToString());
+            Assert.AreEqual("Qf3",   game.BoardStates["White"][2].ToString());
+            Assert.AreEqual("Bc5",   game.BoardStates["Black"][2].ToString());
+            Assert.AreEqual("d3",    game.BoardStates["White"][3].ToString());
+            Assert.AreEqual("O-O",   game.BoardStates["Black"][3].ToString());
+            Assert.AreEqual("Bg5",   game.BoardStates["White"][4].ToString());
+            Assert.AreEqual("h6",    game.BoardStates["Black"][4].ToString());
+            Assert.AreEqual("O-O-O", game.BoardStates["White"][5].ToString());
+            Assert.AreEqual("hxg5",  game.BoardStates["Black"][5].ToString());
+            Assert.AreEqual("Qxf6",  game.BoardStates["White"][6].ToString());
+            Assert.AreEqual("a5",    game.BoardStates["Black"][6].ToString());
+            Assert.AreEqual("Qxg7+", game.BoardStates["White"][7].ToString());
+            Assert.AreEqual("Kxg7",  game.BoardStates["Black"][7].ToString());
+            Assert.AreEqual("Nf3",   game.BoardStates["White"][8].ToString());
+            Assert.AreEqual("Bxf2",  game.BoardStates["Black"][8].ToString());
+            Assert.AreEqual("Nb5",   game.BoardStates["White"][9].ToString());
+            Assert.AreEqual("g4",    game.BoardStates["Black"][9].ToString());
+            Assert.AreEqual("Na7",   game.BoardStates["White"][10].ToString());
+            Assert.AreEqual("g3",    game.BoardStates["Black"][10].ToString());
+            Assert.AreEqual("Nc6",   game.BoardStates["White"][11].ToString());
+            Assert.AreEqual("gxh2",  game.BoardStates["Black"][11].ToString());
+            // Assert.AreEqual("Nfxe5", game.MoveHistory[12].WhiteMove.ToString());
+            // Assert.AreEqual("Ncxe5", game.MoveHistory[12].WhiteMove.ToString());
+            Assert.AreEqual("R1xe5", game.BoardStates["White"][16].ToString());
+        }
+
+        [TestMethod]
+        public void ThreefoldRepetitionStalemate()
+        {
+            var game = new GameHandler();
+
+            for (int i = 0; i < 5; i++)
+            {
+                game.Move(this, new MoveEventArgs(1, 0, 2, 2));
+                game.Move(this, new MoveEventArgs(1, 7, 2, 5));
+                game.Move(this, new MoveEventArgs(2, 2, 1, 0));
+                game.Move(this, new MoveEventArgs(2, 5, 1, 7));
+            }
+
+            Assert.IsTrue(game.IsOnStalemate);
         }
     }
 }

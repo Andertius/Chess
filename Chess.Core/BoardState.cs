@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Chess.Core.Pieces;
 
 namespace Chess.Core
 {
-    public class MoveDisplay
+    public class BoardState
     {
-        public MoveDisplay (
+        public BoardState (
             ChessPiece piece,
             ChessPiece pawnProm,
             bool isShortCastle,
@@ -23,7 +20,7 @@ namespace Chess.Core
             (int, int) start,
             (int, int) end)
         {
-            Piece = piece;
+            CurrentPiece = piece;
             PawnPromotion = pawnProm;
             IsShortCastle = isShortCastle;
             IsLongCastle = isLongCastle;
@@ -36,9 +33,13 @@ namespace Chess.Core
             End = end;
         }
 
-        public ChessPiece Piece { get; }
+        public ChessPiece CurrentPiece { get; }
 
         public ChessPiece PawnPromotion { get; set; }
+
+        public Board Board { get; set; }
+
+        public int TimesRepeated { get; set; }
 
         public bool IsShortCastle { get; set; }
 
@@ -54,22 +55,32 @@ namespace Chess.Core
 
         public bool CouldAnotherPieceCaptureSameFile {get; set; }
 
-        public (int, int) Start { get; }
+        public (int X, int Y) Start { get; }
 
-        public (int, int) End { get; }
+        public (int X, int Y) End { get; }
+
+        public static void CheckForRepeatingStates(Dictionary<string, List<BoardState>> boardStates, BoardState state, PieceColor color)
+        {
+            for (int i = boardStates[Enum.GetName(typeof(PieceColor), color)].Count - 1; i >= 0; i--)
+            {
+                var boardState = boardStates[Enum.GetName(typeof(PieceColor), color)][i];
+
+                if (boardState.Board == state.Board)
+                {
+                    boardState.TimesRepeated++;
+                    state.TimesRepeated = boardState.TimesRepeated;
+                    break;
+                }
+            }
+        }
 
         public override string ToString()
         {
             string result = "";
 
-            if (Piece is Pawn)
+            if (CurrentPiece.Piece == Piece.Pawn)
             {
-                result += IsCapturing ? $"{(char)(Start.Item1 + 97)}x" : "";
-
-                if (!(PawnPromotion is null))
-                {
-                    result += $"={PawnPromotion}";
-                }
+                result += IsCapturing ? $"{(char)(Start.X + 97)}x" : "";
             }
             else
             {
@@ -82,18 +93,23 @@ namespace Chess.Core
                     return "O-O";
                 }
 
-                result += $"{Piece}";
+                result += $"{CurrentPiece}";
 
                 if (IsCapturing)
                 {
-                    result += CouldAnotherPieceCapture ? $"{(char)(Start.Item1 + 97)}x" :
-                        CouldAnotherPieceCaptureSameFile ? $"{Start.Item2 + 1}x" : "x";
+                    result += CouldAnotherPieceCapture ? $"{(char)(Start.X + 97)}x" :
+                        CouldAnotherPieceCaptureSameFile ? $"{Start.Y + 1}x" : "x";
                 }
             }
 
-            result += $"{(char)(End.Item1 + 97)}{End.Item2 + 1}";
-            result += IsCheck ? "+" : IsMate ? "#" : "";
+            result += $"{(char)(End.X + 97)}{End.Y + 1}";
 
+            if (!(PawnPromotion is null))
+            {
+                result += $"={PawnPromotion}";
+            }
+
+            result += IsCheck ? "+" : IsMate ? "#" : "";
             return result;
         }
     }

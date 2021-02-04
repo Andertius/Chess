@@ -101,7 +101,7 @@ namespace Chess.Core.Pieces
 
         public bool Equals(Rook rook)
         {
-            return X == rook.X && Y == rook.Y && Value == rook.Value && Color == rook.Color;
+            return !(rook is null) && X == rook.X && Y == rook.Y && Value == rook.Value && Color == rook.Color && IsMoved == rook.IsMoved;
         }
 
         private bool IsValid(int x, int y, Board board)

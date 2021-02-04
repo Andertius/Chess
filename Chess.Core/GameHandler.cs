@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -10,19 +9,28 @@ namespace Chess.Core
 {
     public class GameHandler
     {
+        private int fiftyRuleCounter;
+
         public GameHandler()
         {
-            WhiteCaptured = new ObservableCollection<ChessPiece>();
-            BlackCaptured = new ObservableCollection<ChessPiece>();
+            Captured = new Dictionary<string, List<ChessPiece>>
+            {
+                { "White", new List<ChessPiece>() },
+                { "Black", new List<ChessPiece>() }
+            };
+
+            BoardStates = new Dictionary<string, List<BoardState>>()
+            {
+                { "White", new List<BoardState>() },
+                { "Black", new List<BoardState>() }
+            };
+
             Board = new Board();
             Turn = PieceColor.White;
-            MoveHistory = new List<(MoveDisplay, MoveDisplay)>();
-            Loser = null;
+            Winner = null;
         }
 
-        public ObservableCollection<ChessPiece> WhiteCaptured { get; }
-
-        public ObservableCollection<ChessPiece> BlackCaptured { get; }
+        public Dictionary<string, List<ChessPiece>> Captured { get; }
 
         public Board Board { get; }
 
@@ -44,9 +52,9 @@ namespace Chess.Core
 
         public bool IsOnStalemate { get; private set; }
 
-        public PieceColor? Loser { get; private set; }
+        public PieceColor? Winner { get; private set; }
 
-        public List<(MoveDisplay, MoveDisplay)> MoveHistory { get; }
+        public Dictionary<string, List<BoardState>> BoardStates { get; }
 
         public static event EventHandler<PawnPromotionEventArgs> PromotionRequested;
 
@@ -62,85 +70,83 @@ namespace Chess.Core
         {
             if (Board[e.X, e.Y].OccupiedBy?.Color == Turn)
             {
-                var move = new MoveDisplay(Board[e.X, e.Y].OccupiedBy, null, false, false, false,
+                var state = new BoardState(Board[e.X, e.Y].OccupiedBy, null, false, false, false,
                     false, false, false, false, (e.X, e.Y), (e.NewX, e.NewY));
 
-                if (Board[e.X, e.Y].Move(e.NewX, e.NewY, Board, out var capturedPiece, false))
+                if (Winner is null && !IsOnStalemate && Board[e.X, e.Y].Move(e.NewX, e.NewY, Board, out var capturedPiece, false))
                 {
+                    state.Board = new Board(Board);
+
                     if (Board[e.NewX, e.NewY].OccupiedBy.JustLongCastled)
                     {
-                        move.IsLongCastle = true;
+                        state.IsLongCastle = true;
                     }
                     else if (Board[e.NewX, e.NewY].OccupiedBy.JustShortCastled)
                     {
-                        move.IsShortCastle = true;
+                        state.IsShortCastle = true;
                     }
 
-                    if (Board[e.NewX, e.NewY].OccupiedBy != move.Piece)
+                    if (Board[e.NewX, e.NewY].OccupiedBy != state.CurrentPiece)
                     {
-                        move.PawnPromotion = Board[e.NewX, e.NewY].OccupiedBy;
+                        state.PawnPromotion = Board[e.NewX, e.NewY].OccupiedBy;
+                        Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(new Pawn(-1, -1, Turn));
+                    }
 
-                        if (Turn == PieceColor.White)
+                    if (!(capturedPiece is null))
+                    {
+                        Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(capturedPiece);
+                        state.IsCapturing = true;
+
+                        var canAlsoCapture = Board.CanAlsoCapture(e.NewX, e.NewY, Turn, Board[e.NewX, e.NewY].OccupiedBy.Piece);
+                        state.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == e.NewX;
+                        state.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !state.CouldAnotherPieceCaptureSameFile;
+                    }
+
+                    if (!state.IsCapturing && state.PawnPromotion is null && state.CurrentPiece.Piece != Piece.Pawn)
+                    {
+                        fiftyRuleCounter++;
+                    }
+                    else
+                    {
+                        fiftyRuleCounter = 0;
+                    }
+
+                    var oppositeColor = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+
+                    if (Board.CheckForCheck(oppositeColor))
+                    {
+                        if (!Board.CheckIfHasValidMoves(oppositeColor))
                         {
-                            BlackCaptured.Add(new Pawn(-1, -1, PieceColor.White));
+                            Winner = Turn;
+                            state.IsMate = true;
                         }
                         else
                         {
-                            WhiteCaptured.Add(new Pawn(-1, -1, PieceColor.Black));
+                            state.IsCheck = true;
                         }
                     }
-
-                    if (!(capturedPiece is null) && Turn == PieceColor.White)
-                    {
-                        WhiteCaptured.Add(capturedPiece);
-                        move.IsCapturing = true;
-
-                        var canAlsoCapture = Board.CanAlsoCapture(e.NewX, e.NewY, Turn, Board[e.NewX, e.NewY].OccupiedBy.Piece);
-                        move.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == e.NewX;
-                        move.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !move.CouldAnotherPieceCaptureSameFile;
-                    }
-                    else if (!(capturedPiece is null) && Turn == PieceColor.Black)
-                    {
-                        BlackCaptured.Add(capturedPiece);
-                        move.IsCapturing = true;
-
-                        var canAlsoCapture = Board.CanAlsoCapture(e.NewX, e.NewY, Turn, Board[e.NewX, e.NewY].OccupiedBy.Piece);
-                        move.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == e.NewX;
-                        move.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !move.CouldAnotherPieceCaptureSameFile;
-                    }
-
-                    e.Moved = true;
-                    Turn = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
-
-                    if (Board.CheckForCheck(Turn))
-                    {
-                        if (!Board.CheckIfHasValidMoves(Turn))
-                        {
-                            Loser = Turn;
-                            move.IsMate = true;
-                        }
-                        else
-                        {
-                            move.IsCheck = true;
-                        }
-                    }
-                    else if (!Board.CheckIfHasValidMoves(Turn))
+                    else if (fiftyRuleCounter == 100 || !Board.CheckIfHasValidMoves(oppositeColor) || CheckForThreefoldRepetition(state))
                     {
                         IsOnStalemate = true;
                     }
 
                     Board.UnEnPassantAllPawns();
+                    BoardStates[Enum.GetName(typeof(PieceColor), Turn)].Add(state);
 
-                    if (Turn == PieceColor.Black)
-                    {
-                        MoveHistory.Add((move, null));
-                    }
-                    else
-                    {
-                        MoveHistory[^1] = (MoveHistory[^1].Item1, move);
-                    }
+                    Turn = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+                    e.Moved = true;
                 }
             }
+        }
+
+        private bool CheckForThreefoldRepetition(BoardState state)
+        {
+            BoardState.CheckForRepeatingStates(BoardStates, state, Turn);
+
+            var white = BoardStates["White"].Where(x => x.TimesRepeated == 3).ToList();
+            var black = BoardStates["Black"].Where(x => x.TimesRepeated == 3).ToList();
+
+            return white.Count != 0 || black.Count != 0;
         }
     }
 }

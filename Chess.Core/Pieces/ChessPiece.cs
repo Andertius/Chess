@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Chess.Core.Pieces
 {
-    public abstract class ChessPiece
+    public abstract class ChessPiece : IEquatable<ChessPiece>
     {
         public ChessPiece(int x, int y, PieceColor color, int value, Piece piece)
         {
@@ -96,6 +95,21 @@ namespace Chess.Core.Pieces
             mockBoard[X, Y].Move(newX, newY, mockBoard, out _, true);
 
             return mockBoard.CheckForCheck(Color);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ChessPiece chess && Equals(chess);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Value, Color);
+        }
+
+        public bool Equals(ChessPiece other)
+        {
+            return !(other is null) && X == other.X && Y == other.Y && Value == other.Value && Color == other.Color && Piece == other.Piece;
         }
     }
 }

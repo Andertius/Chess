@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Chess.Core.Pieces;
 
 namespace Chess.Core
 {
-    public class Board
+    public class Board : IEquatable<Board>
     {
         public Board()
         {
@@ -38,17 +39,17 @@ namespace Chess.Core
             }
         }
 
-        public List<List<Square>> GameBoard { get; }
+        internal List<List<Square>> GameBoard { get; }
 
-        public Square this [int index, int jndex]
+        internal Square this [int index, int jndex]
             => GameBoard[index][jndex];
 
-        public static void Occupy(Square square, ChessPiece piece)
+        internal static void Occupy(Square square, ChessPiece piece)
         {
             square.Occupy(piece);
         }
 
-        public void CheckForProtection()
+        internal void CheckForProtection()
         {
             UnportectEverything();
 
@@ -74,7 +75,7 @@ namespace Chess.Core
             }
         }
 
-        public bool CheckForCheck(PieceColor color)
+        internal bool CheckForCheck(PieceColor color)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -97,7 +98,7 @@ namespace Chess.Core
             return false;
         }
 
-        public void UnEnPassantAllPawns()
+        internal void UnEnPassantAllPawns()
         {
             for (int i = 0; i < 8; i++)
             {
@@ -111,7 +112,7 @@ namespace Chess.Core
             }
         }
 
-        public bool CheckIfHasValidMoves(PieceColor color)
+        internal bool CheckIfHasValidMoves(PieceColor color)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -127,7 +128,7 @@ namespace Chess.Core
             return false;
         }
 
-        public ChessPiece CanAlsoCapture(int x, int y, PieceColor color, Piece piece)
+        internal ChessPiece CanAlsoCapture(int x, int y, PieceColor color, Piece piece)
         {
             var mockBoard = new Board(this);
             mockBoard[x, y].Occupy(null);
@@ -163,6 +164,39 @@ namespace Chess.Core
             }
 
             return result;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Board board && Equals(board);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(GameBoard);
+        }
+
+        public bool Equals(Board board)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (!GameBoard[i].SequenceEqual(board.GameBoard[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool operator ==(Board left, Board right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Board left, Board right)
+        {
+            return !(left == right);
         }
 
         private void FillWhite()

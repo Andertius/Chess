@@ -44,7 +44,7 @@ namespace Chess.Core.Pieces
 
         public bool Equals(Queen queen)
         {
-            return X == queen.X && Y == queen.Y && Value == queen.Value && Color == queen.Color;
+            return !(queen is null) && X == queen.X && Y == queen.Y && Value == queen.Value && Color == queen.Color;
         }
 
         private bool IsValid(int x, int y, Board board)

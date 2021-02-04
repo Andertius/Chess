@@ -6,7 +6,7 @@ using Chess.Core.Pieces;
 
 namespace Chess.Core
 {
-    public class Square
+    public class Square : IEquatable<Square>
     {
         public Square(ChessPiece piece)
         {
@@ -47,8 +47,6 @@ namespace Chess.Core
 
         public bool IsBlackProtected { get; set; }
 
-        public bool IsPinned { get; set; }
-
         public void Occupy(ChessPiece piece)
         {
             OccupiedBy = piece;
@@ -72,12 +70,6 @@ namespace Chess.Core
             return result;
         }
 
-        public override string ToString()
-        {
-            return OccupiedBy?.ToString() ?? "0";
-            //return IsWhiteProtected ? "1" : "0";
-        }
-
         public bool Move(int x, int y, Board board, out ChessPiece capturedPiece, bool isMock)
         {
             if (OccupiedBy is null)
@@ -89,6 +81,73 @@ namespace Chess.Core
             {
                 return OccupiedBy.Move(x, y, board, out capturedPiece, isMock);
             }
+        }
+
+        public override string ToString()
+        {
+            return OccupiedBy?.ToString() ?? "0";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Square sq && Equals(sq);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(OccupiedBy, IsWhiteProtected, IsBlackProtected);
+        }
+
+        public bool Equals(Square sq)
+        {
+            bool chessPpiecesAreSame;
+
+            switch (OccupiedBy?.Piece)
+            {
+                case Piece.Bishop:
+                    var leftBishop = OccupiedBy as Bishop;
+                    var rightBishop = sq.OccupiedBy as Bishop;
+                    chessPpiecesAreSame = leftBishop.Equals(rightBishop);
+                    break;
+
+                case Piece.King:
+                    var leftKing = OccupiedBy as King;
+                    var rightKing = sq.OccupiedBy as King;
+                    chessPpiecesAreSame = leftKing.Equals(rightKing);
+                    break;
+
+                case Piece.Knight:
+                    var leftKnight = OccupiedBy as Knight;
+                    var rightKnight = sq.OccupiedBy as Knight;
+                    chessPpiecesAreSame = leftKnight.Equals(rightKnight);
+                    break;
+
+                case Piece.Pawn:
+                    var leftPawn = OccupiedBy as Pawn;
+                    var rightPawn = sq.OccupiedBy as Pawn;
+                    chessPpiecesAreSame = leftPawn.Equals(rightPawn);
+                    break;
+
+                case Piece.Queen:
+                    var leftQueen = OccupiedBy as Queen;
+                    var rightQueen = sq.OccupiedBy as Queen;
+                    chessPpiecesAreSame = leftQueen.Equals(rightQueen);
+                    break;
+
+                case Piece.Rook:
+                    var leftRook = OccupiedBy as Rook;
+                    var rightRook = sq.OccupiedBy as Rook;
+                    chessPpiecesAreSame = leftRook.Equals(rightRook);
+                    break;
+
+                default:
+                    chessPpiecesAreSame = OccupiedBy is null && sq.OccupiedBy is null;
+                    break;
+            }
+
+            return chessPpiecesAreSame &&
+                IsWhiteProtected == sq.IsWhiteProtected &&
+                IsBlackProtected == sq.IsBlackProtected;
         }
     }
 }

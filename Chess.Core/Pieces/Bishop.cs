@@ -44,7 +44,7 @@ namespace Chess.Core.Pieces
 
         public bool Equals(Bishop bishop)
         {
-            return X == bishop.X && Y == bishop.Y && Value == bishop.Value && Color == bishop.Color;
+            return !(bishop is null) && X == bishop.X && Y == bishop.Y && Value == bishop.Value && Color == bishop.Color;
         }
 
         private bool IsValid(int x, int y, Board board)

@@ -109,7 +109,7 @@ namespace Chess.Core.Pieces
 
         public bool Equals(King king)
         {
-            return X == king.X && Y == king.Y && Value == king.Value && Color == king.Color;
+            return !(king is null) && X == king.X && Y == king.Y && Value == king.Value && Color == king.Color && IsMoved == king.IsMoved;
         }
 
         private bool IsValid(int x, int y, out bool castlingLeft, out bool castlingRight, Board board)

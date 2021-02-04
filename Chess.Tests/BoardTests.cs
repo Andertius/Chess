@@ -210,5 +210,62 @@ namespace Chess.Tests
             Assert.IsTrue(board[5, 6].OccupiedBy.CheckForChecksAfterMove(5, 5, board));
             Assert.IsTrue(board[5, 6].OccupiedBy is Pawn);
         }
+
+        [TestMethod]
+        public void BoardsAreEqual()
+        {
+            var board1 = new Board();
+            var board2 = new Board();
+
+            board1[4, 1].Move(4, 3, board1, out _, false);
+            board2[4, 1].Move(4, 3, board2, out _, false);
+
+            Assert.AreEqual(board1, board2);
+        }
+
+        [TestMethod]
+        public void BoardsAreNotEqual_OnePawnIsEnPassantable()
+        {
+            var game1 = new GameHandler();
+            var game2 = new GameHandler();
+
+            game1.Move(this, new MoveEventArgs(4, 1, 4, 3));
+            game1.Move(this, new MoveEventArgs(1, 7, 2, 5));
+            game1.Move(this, new MoveEventArgs(1, 0, 2, 2));
+            game1.Move(this, new MoveEventArgs(2, 5, 1, 7));
+            game1.Move(this, new MoveEventArgs(2, 2, 1, 0));
+
+            game2.Move(this, new MoveEventArgs(4, 1, 4, 3));
+
+            Assert.AreNotEqual(game1.Board, game2.Board);
+        }
+
+        [TestMethod]
+        public void BoardsAreNotEqual_OneKingIsMoved()
+        {
+            var board1 = new Board();
+            var board2 = new Board();
+
+            board1[4, 1].Move(4, 3, board1, out _, false);
+            board1[4, 0].Move(4, 1, board1, out _, false);
+            board1[4, 1].Move(4, 0, board1, out _, false);
+            board2[4, 1].Move(4, 3, board2, out _, false);
+
+            Assert.AreNotEqual(board1, board2);
+        }
+
+        [TestMethod]
+        public void BoardsAreNotEqual_OneRookIsMoved()
+        {
+            var board1 = new Board();
+            var board2 = new Board();
+
+            board1[0, 1].Move(0, 3, board1, out _, false);
+            board1[0, 0].Move(0, 1, board1, out _, false);
+            board1[0, 1].Move(0, 0, board1, out _, false);
+            board2[0, 1].Move(0, 3, board2, out _, false);
+
+            Assert.AreNotEqual(board1, board2);
+        }
     }
 }
