@@ -13,3 +13,4 @@ A full-fledged two-player chess app with UI.
 8. Stalemates
 9. Pawn promotion
 10. Move history
+11. Forced stalemates
