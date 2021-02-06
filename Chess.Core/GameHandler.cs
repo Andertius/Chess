@@ -36,7 +36,7 @@ namespace Chess.Core
         }
 
         /// <summary>
-        /// Gets the <see cref="Dictionary{TKey, TValue}"/> of all the moves taken from the beginning of the game.
+        /// Gets the <see cref="Dictionary{TKey, TValue}"/> of all the pieces captured from the beginning of the game.
         /// </summary>
         public Dictionary<string, List<ChessPiece>> Captured { get; }
 
@@ -87,7 +87,7 @@ namespace Chess.Core
         public PieceColor? Winner { get; private set; }
 
         /// <summary>
-        /// Gets all the previous board states.
+        /// Gets the <see cref="Dictionary{TKey, TValue}"/> of all the moves taken from the beginning of the game.
         /// </summary>
         public Dictionary<string, List<BoardState>> BoardStates { get; }
 
@@ -103,12 +103,17 @@ namespace Chess.Core
         /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is a <see cref="King"/>.</exception>
         /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is a <see cref="Pawn"/>.</exception>
         /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is <see langword="null"/>.</exception>
-        public static ChessPiece RequestPromotion(object sender, int x, PieceColor color)
+        public static ChessPiece RequestPromotion(object sender)
         {
-            var e = new PawnPromotionEventArgs(x, color);
+            var e = new PawnPromotionEventArgs();
+
             PromotionRequested?.Invoke(sender, e);
 
-            if (e.Piece.Piece == Piece.King)
+            if (e.Piece is null)
+            {
+                throw new ArgumentException("The chess piece cannot be null");
+            }
+            else if(e.Piece.Piece == Piece.King)
             {
                 throw new ArgumentException("The pawn cannot be promoted into a king");
             }
@@ -116,11 +121,7 @@ namespace Chess.Core
             {
                 throw new ArgumentException("The pawn cannot be promoted into another pawn");
             }
-            else if (e.Piece is null)
-            {
-                throw new ArgumentException("The chess piece cannot be null");
-            }
-
+            
             return e.Piece;
         }
 
@@ -162,16 +163,23 @@ namespace Chess.Core
             {
                 state.PawnPromotion = Board[newX, newY].OccupiedBy;
                 Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(new Pawn(-1, -1, Turn));
+                Captured[Enum.GetName(typeof(PieceColor), Turn)].Sort();
             }
 
             if (!(capturedPiece is null))
             {
                 Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(capturedPiece);
+                Captured[Enum.GetName(typeof(PieceColor), Turn)].Sort();
                 state.IsCapturing = true;
 
                 var canAlsoCapture = Board.CanAlsoCapture(newX, newY, Turn, Board[newX, newY].OccupiedBy.Piece);
                 state.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == newX;
                 state.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !state.CouldAnotherPieceCaptureSameFile;
+
+                if (capturedPiece.Y != newY)
+                {
+                    Board[capturedPiece.X, capturedPiece.Y].Occupy(null);
+                }
             }
 
             if (!state.IsCapturing && state.PawnPromotion is null && state.CurrentPiece.Piece != Piece.Pawn)

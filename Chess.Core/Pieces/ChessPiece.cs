@@ -5,7 +5,7 @@ namespace Chess.Core.Pieces
     /// <summary>
     /// An abstract base class for the chess pieces.
     /// </summary>
-    public abstract class ChessPiece : IEquatable<ChessPiece>
+    public abstract class ChessPiece : IEquatable<ChessPiece>, IComparable<ChessPiece>
     {
         /// <summary>
         /// Initializes a new piece with the given coordinates, color, and type.
@@ -172,6 +172,11 @@ namespace Chess.Core.Pieces
             mockBoard[X, Y].Move(newX, newY, mockBoard, out _, true);
 
             return mockBoard.CheckForCheck(Color);
+        }
+
+        public int CompareTo(ChessPiece other)
+        {
+            return Value < other.Value ? -1 : Value > other.Value ? 1 : 0;
         }
     }
 }
