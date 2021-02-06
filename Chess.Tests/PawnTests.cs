@@ -94,15 +94,11 @@ namespace Chess.Tests
             var game = new GameHandler();
             var pawn = game.Board[1, 1].OccupiedBy as Pawn;
 
-            game.Move(this, new MoveEventArgs(1, 1, 1, 3));
-            game.Move(this, new MoveEventArgs(0, 6, 0, 4));
-            game.Move(this, new MoveEventArgs(1, 3, 1, 4));
+            game.Move(1, 1, 1, 3);
+            game.Move(0, 6, 0, 4);
+            game.Move(1, 3, 1, 4);
 
-            var move = new MoveEventArgs(1, 4, 0, 5);
-            game.Move(this, move);
-
-            Assert.IsFalse(move.Moved);
-
+            Assert.IsFalse(game.Move(1, 4, 0, 5));
             Assert.IsFalse(pawn.CanBeEnPassanted);
         }
 

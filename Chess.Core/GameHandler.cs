@@ -100,7 +100,9 @@ namespace Chess.Core
         /// Requests the <see cref="ChessPiece"/> into which the <see cref="Pawn"/> should promote.
         /// </summary>
         /// <returns>The <see cref="ChessPiece"/> that the <see cref="Pawn"/> should promote to.</returns>
-        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is a <see cref="King"/>.</exception>
+        /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is a <see cref="Pawn"/>.</exception>
+        /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is <see langword="null"/>.</exception>
         public static ChessPiece RequestPromotion(object sender, int x, PieceColor color)
         {
             var e = new PawnPromotionEventArgs(x, color);
@@ -126,35 +128,39 @@ namespace Chess.Core
         /// Moves the <see cref="ChessPiece"/> in the given <see cref="Square"/> if it is a valid move,
         /// while switching turns and checking for checks, mates and stalemates.
         /// </summary>
-        public void Move(object sender, MoveEventArgs e)
+        /// <returns><see langword="true"/> if the move is valid; otherwise, <see langword="false"/>.</returns>
+        public bool Move(int x, int y, int newX, int newY)
         {
-            if (Board[e.X, e.Y].OccupiedBy?.Color == Turn)
+            if (Board[x, y].OccupiedBy?.Color == Turn)
             {
-                var state = new BoardState(Board[e.X, e.Y].OccupiedBy, null, (e.X, e.Y), (e.NewX, e.NewY));
+                var state = new BoardState(Board[x, y].OccupiedBy, null, (x, y), (newX,newY));
 
-                if (Winner is null && !IsInStalemate && Board[e.X, e.Y].Move(e.NewX, e.NewY, Board, out var capturedPiece, false))
+                if (Winner is null && !IsInStalemate && Board[x, y].Move(newX, newY, Board, out var capturedPiece, false))
                 {
-                    ManageGame(state, e, capturedPiece);
+                    ManageGame(state, newX, newY, capturedPiece);
+                    return true;
                 }
             }
+
+            return false;
         }
 
-        private void ManageGame(BoardState state, MoveEventArgs e, ChessPiece capturedPiece)
+        private void ManageGame(BoardState state, int newX, int newY, ChessPiece capturedPiece)
         {
             state.Board = new Board(Board);
 
-            if (Board[e.NewX, e.NewY].OccupiedBy.JustLongCastled)
+            if (Board[newX, newY].OccupiedBy.JustLongCastled)
             {
                 state.IsLongCastle = true;
             }
-            else if (Board[e.NewX, e.NewY].OccupiedBy.JustShortCastled)
+            else if (Board[newX, newY].OccupiedBy.JustShortCastled)
             {
                 state.IsShortCastle = true;
             }
 
-            if (Board[e.NewX, e.NewY].OccupiedBy != state.CurrentPiece)
+            if (Board[newX, newY].OccupiedBy != state.CurrentPiece)
             {
-                state.PawnPromotion = Board[e.NewX, e.NewY].OccupiedBy;
+                state.PawnPromotion = Board[newX, newY].OccupiedBy;
                 Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(new Pawn(-1, -1, Turn));
             }
 
@@ -163,8 +169,8 @@ namespace Chess.Core
                 Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(capturedPiece);
                 state.IsCapturing = true;
 
-                var canAlsoCapture = Board.CanAlsoCapture(e.NewX, e.NewY, Turn, Board[e.NewX, e.NewY].OccupiedBy.Piece);
-                state.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == e.NewX;
+                var canAlsoCapture = Board.CanAlsoCapture(newX, newY, Turn, Board[newX, newY].OccupiedBy.Piece);
+                state.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == newX;
                 state.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !state.CouldAnotherPieceCaptureSameFile;
             }
 
@@ -200,7 +206,6 @@ namespace Chess.Core
             BoardStates[Enum.GetName(typeof(PieceColor), Turn)].Add(state);
 
             Turn = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
-            e.Moved = true;
         }
 
         private bool CheckForThreefoldRepetition(BoardState state)

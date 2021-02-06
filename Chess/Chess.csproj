@@ -7,7 +7,63 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="models\black\bishop.png" />
+    <None Remove="models\black\king.png" />
+    <None Remove="models\black\knight.png" />
+    <None Remove="models\black\pawn.png" />
+    <None Remove="models\black\queen.png" />
+    <None Remove="models\black\rook.png" />
+    <None Remove="models\white\bishop.png" />
+    <None Remove="models\white\king.png" />
+    <None Remove="models\white\knight.png" />
+    <None Remove="models\white\pawn.png" />
+    <None Remove="models\white\queen.png" />
+    <None Remove="models\white\rook.png" />
+    <None Remove="Settings.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Chess.Core\Chess.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="models\black\bishop.png" />
+    <Resource Include="models\black\king.png" />
+    <Resource Include="models\black\knight.png" />
+    <Resource Include="models\black\pawn.png" />
+    <Resource Include="models\black\queen.png" />
+    <Resource Include="models\black\rook.png" />
+    <Resource Include="models\white\bishop.png" />
+    <Resource Include="models\white\king.png" />
+    <Resource Include="models\white\knight.png" />
+    <Resource Include="models\white\pawn.png" />
+    <Resource Include="models\white\queen.png" />
+    <Resource Include="models\white\rook.png" />
+    <Resource Include="Settings.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Capture.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Castle.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Check.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Mate.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Move.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Move.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Promote.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

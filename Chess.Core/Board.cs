@@ -58,7 +58,7 @@ namespace Chess.Core
         /// Gets the <see cref="Square"/> with the given coordinates.
         /// </summary>
         /// <returns></returns>
-        public Square this [int index, int jndex]
+        public Square this[int index, int jndex]
             => GameBoard[index][jndex];
 
         /// <summary>

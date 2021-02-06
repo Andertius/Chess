@@ -229,13 +229,13 @@ namespace Chess.Tests
             var game1 = new GameHandler();
             var game2 = new GameHandler();
 
-            game1.Move(this, new MoveEventArgs(4, 1, 4, 3));
-            game1.Move(this, new MoveEventArgs(1, 7, 2, 5));
-            game1.Move(this, new MoveEventArgs(1, 0, 2, 2));
-            game1.Move(this, new MoveEventArgs(2, 5, 1, 7));
-            game1.Move(this, new MoveEventArgs(2, 2, 1, 0));
+            game1.Move(4, 1, 4, 3);
+            game1.Move(1, 7, 2, 5);
+            game1.Move(1, 0, 2, 2);
+            game1.Move(2, 5, 1, 7);
+            game1.Move(2, 2, 1, 0);
 
-            game2.Move(this, new MoveEventArgs(4, 1, 4, 3));
+            game2.Move(4, 1, 4, 3);
 
             Assert.AreNotEqual(game1.Board, game2.Board);
         }
