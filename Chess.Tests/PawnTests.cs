@@ -108,7 +108,12 @@ namespace Chess.Tests
             var game = new GameHandler();
             var pawn = game.Board[1, 1].OccupiedBy as Pawn;
 
-            static void Promote(object sender, PawnPromotionEventArgs e) => e.Piece = new Queen(e.X, 7, e.Color);
+            static void Promote(object sender, PawnPromotionEventArgs e)
+            {
+                var p = (Pawn)sender;
+                e.Piece = new Queen(p.X, 7, p.Color);
+            }
+
             GameHandler.PromotionRequested += Promote;
 
             pawn.Move(1, 3, game.Board, out _, false);

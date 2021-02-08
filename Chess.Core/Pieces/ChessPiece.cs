@@ -75,7 +75,7 @@ namespace Chess.Core.Pieces
         /// <returns><see langword="true"/> if the move is valid; otherwise, <see langword="false"/>.</returns>
         public virtual bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
-            if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
+            if ((newX != X || newY != Y) && CheckIfIsValidMove(newX, newY, board))
             {
                 if (!isMock && CheckForChecksAfterMove(newX, newY, board))
                 {
@@ -109,7 +109,7 @@ namespace Chess.Core.Pieces
         /// <param name="newY">The rank of the move.</param>
         /// <param name="board">The board in which the move is executed.</param>
         /// <returns><see langword="true"/> if the move is valid; otherwise, <see langword="false"/>.</returns>
-        public virtual bool IsValidMove(int newX, int newY, Board board) => true;
+        public virtual bool CheckIfIsValidMove(int newX, int newY, Board board) => true;
 
         /// <summary>
         /// Checks whether the piece portects the given square.
@@ -131,7 +131,7 @@ namespace Chess.Core.Pieces
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (IsValidMove(i, j, board) && !CheckForChecksAfterMove(i, j, board))
+                    if (CheckIfIsValidMove(i, j, board) && !CheckForChecksAfterMove(i, j, board))
                     {
                         return true;
                     }
@@ -166,7 +166,7 @@ namespace Chess.Core.Pieces
         /// <param name="newY">The rank onto which the <see cref="ChessPiece"/> should move.</param>
         /// <param name="board">The board in which the move should be executed.</param>
         /// <returns><see langword="true"/> if the move is opening a check to the ally king; otherwise, <see langword="false"/>.</returns>
-        protected bool CheckForChecksAfterMove(int newX, int newY, Board board)
+        public bool CheckForChecksAfterMove(int newX, int newY, Board board)
         {
             var mockBoard = new Board(board);
             mockBoard[X, Y].Move(newX, newY, mockBoard, out _, true);

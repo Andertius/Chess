@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DrawOffer.png" />
     <None Remove="models\black\bishop.png" />
     <None Remove="models\black\king.png" />
     <None Remove="models\black\knight.png" />
@@ -19,6 +20,7 @@
     <None Remove="models\white\pawn.png" />
     <None Remove="models\white\queen.png" />
     <None Remove="models\white\rook.png" />
+    <None Remove="Resign.png" />
     <None Remove="Settings.png" />
   </ItemGroup>
 
@@ -27,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="DrawOffer.png" />
     <Resource Include="models\black\bishop.png" />
     <Resource Include="models\black\king.png" />
     <Resource Include="models\black\knight.png" />
@@ -39,6 +42,7 @@
     <Resource Include="models\white\pawn.png" />
     <Resource Include="models\white\queen.png" />
     <Resource Include="models\white\rook.png" />
+    <Resource Include="Resign.png" />
     <Resource Include="Settings.png" />
   </ItemGroup>
 

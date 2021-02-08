@@ -55,7 +55,7 @@ namespace Chess.Core.Pieces
         /// <inheritdoc/>
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
-            if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
+            if ((newX != X || newY != Y) && CheckIfIsValidMove(newX, newY, board))
             {
                 if (!isMock && CheckForChecksAfterMove(newX, newY, board))
                 {
@@ -95,7 +95,7 @@ namespace Chess.Core.Pieces
 
                 IsMoved = true;
 
-                if (Y == 7 || Y == 0)
+                if ((Y == 7 || Y == 0) && !isMock)
                 {
                     Promote(board);
                 }
@@ -109,7 +109,7 @@ namespace Chess.Core.Pieces
         }
 
         /// <inheritdoc/>
-        public override bool IsValidMove(int newX, int newY, Board board)
+        public override bool CheckIfIsValidMove(int newX, int newY, Board board)
         {
             if (Color == PieceColor.White)
             {
@@ -159,9 +159,9 @@ namespace Chess.Core.Pieces
             else
             {
                 if (newY == Y - 1 && newX == X - 1 && (!(board[X - 1, Y - 1].OccupiedBy is null) && board[X - 1, Y - 1].OccupiedBy.Color != Color ||
-                    (board[X - 1, Y].OccupiedBy is Pawn leftPawn && leftPawn.Color == PieceColor.White && leftPawn.CanBeEnPassanted)))
+                    (board[X - 1, Y].OccupiedBy is Pawn leftPawn && leftPawn.Color != Color && leftPawn.CanBeEnPassanted)))
                 {
-                    if (board[X - 1, Y].OccupiedBy is Pawn leftPawn1 && leftPawn1.Color == PieceColor.White && leftPawn1.CanBeEnPassanted)
+                    if (board[X - 1, Y].OccupiedBy is Pawn leftPawn1 && leftPawn1.Color != Color && leftPawn1.CanBeEnPassanted)
                     {
                         JustEnPassanted = true;
                         return true;
@@ -171,9 +171,9 @@ namespace Chess.Core.Pieces
                     return true;
                 }
                 else if (newY == Y - 1 && newX == X + 1 && (!(board[X + 1, Y - 1].OccupiedBy is null) && board[X + 1, Y - 1].OccupiedBy.Color != Color ||
-                    (board[X + 1, Y].OccupiedBy is Pawn rightPawn && rightPawn.Color == PieceColor.White && rightPawn.CanBeEnPassanted)))
+                    (board[X + 1, Y].OccupiedBy is Pawn rightPawn && rightPawn.Color != Color && rightPawn.CanBeEnPassanted)))
                 {
-                    if (board[X + 1, Y].OccupiedBy is Pawn rightPawn1 && rightPawn1.Color == PieceColor.White && rightPawn1.CanBeEnPassanted)
+                    if (board[X + 1, Y].OccupiedBy is Pawn rightPawn1 && rightPawn1.Color != Color && rightPawn1.CanBeEnPassanted)
                     {
                         JustEnPassanted = true;
                         return true;

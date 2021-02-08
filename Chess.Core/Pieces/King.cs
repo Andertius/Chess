@@ -22,7 +22,7 @@ namespace Chess.Core.Pieces
         /// <inheritdoc/>
         public override bool Move(int newX, int newY, Board board, out ChessPiece capturedPiece, bool isMock)
         {
-            if ((newX != X || newY != Y) && IsValidMove(newX, newY, board))
+            if ((newX != X || newY != Y) && CheckIfIsValidMove(newX, newY, board))
             {
                 JustLongCastled = false;
                 JustShortCastled = false;
@@ -77,7 +77,7 @@ namespace Chess.Core.Pieces
         }
 
         /// <inheritdoc/>
-        public override bool IsValidMove(int newX, int newY, Board board)
+        public override bool CheckIfIsValidMove(int newX, int newY, Board board)
         {
             if ((Color == PieceColor.White && !board[newX, newY].IsBlackProtected) ||
                 Color == PieceColor.Black && !board[newX, newY].IsWhiteProtected)

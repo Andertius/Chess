@@ -7,9 +7,24 @@
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         Title="Chess" MinHeight="1000" MinWidth="1220" Background="#312e2b">
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" x:Name="LeftColumn"/>
             <ColumnDefinition Width="800"/>
             <ColumnDefinition Width="50"/>
             <ColumnDefinition Width="310"/>
@@ -17,44 +32,143 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" x:Name="TopRow"/>
             <RowDefinition Height="900"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" x:Name="AlmostTopRow"/>
                 <RowDefinition Height="800"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Grid>
-                
-            </Grid>
-
-            <Grid x:Name="BoardGrid" Grid.Row="1">
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="125"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Border x:Name="BlackClockBorder"
+                        Background="#2c2723"
+                        Grid.Column="1"
+                        CornerRadius="5"
+                        Height="40">
+                    
+                </Border>
+            </Grid>
+
+            <Grid Grid.Row="1" MouseMove="MouseMoveHandler">
+                <Grid x:Name="BoardGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                </Grid>
+
+                <Border Grid.RowSpan="8"
+                        Grid.ColumnSpan="8"
+                        Background="White"
+                        Width="400"
+                        Height="100"
+                        x:Name="PawnPromotionBorder"
+                        Visibility="Collapsed">
+                    <Border.Effect>
+                        <DropShadowEffect/>
+                    </Border.Effect>
+
+                    <StackPanel>
+                        <StackPanel x:Name="WhiteStackPanel"
+                                    Orientation="Horizontal">
+                            <Button Width="100" Click="RookChosen">
+                                <Button.Content>
+                                    <Image Source="Models\White\Rook.png"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Width="100" Click="BishopChosen">
+                                <Button.Content>
+                                    <Image Source="Models\White\Bishop.png"
+                                           Width="100"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Width="100" Click="KnightChosen">
+                                <Button.Content>
+                                    <Image Source="Models\White\Knight.png"
+                                           Width="100"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Width="100" Click="QueenChosen">
+                                <Button.Content>
+                                    <Image Source="Models\White\Queen.png"
+                                           Width="100"/>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel x:Name="BlackStackPanel"
+                                    Orientation="Horizontal"
+                                    Visibility="Collapsed">
+                            <Button Width="100" Click="RookChosen">
+                                <Button.Content>
+                                    <Image Source="Models\Black\Rook.png"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Width="100" Click="BishopChosen">
+                                <Button.Content>
+                                    <Image Source="Models\Black\Bishop.png"
+                                           Width="100"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Width="100" Click="KnightChosen">
+                                <Button.Content>
+                                    <Image Source="Models\Black\Knight.png"
+                                           Width="100"/>
+                                </Button.Content>
+                            </Button>
+                            <Button Width="100" Click="QueenChosen">
+                                <Button.Content>
+                                    <Image Source="Models\Black\Queen.png"
+                                           Width="100"/>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Canvas x:Name="MouseCanvas" Grid.Row="1"/>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="125"/>
+                </Grid.ColumnDefinitions>
+
+                <Border x:Name="WhiteClockBorder"
+                        Background="#FFFFFF"
+                        Grid.Column="1"
+                        CornerRadius="5"
+                        Height="40">
+
+                </Border>
             </Grid>
         </Grid>        
 
@@ -69,32 +183,63 @@
                     <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
 
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Grid.Row="0">
+                    <Button Margin="10 0 30 0"
+                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="Resign">
+                        <Button.Content>
+                            <Image Source="Resign.png" Width="40"/>
+                        </Button.Content>
+                    </Button>
+                    
+                    <Button Margin="0 0 40 0"
+                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="Offer Draw">
+                        <Button.Content>
+                            <Image Source="DrawOffer.png" Width="40"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+
                 <Button Width="20" 
                         Height="20"
                         HorizontalAlignment="Right"
-                        Margin="0 0 10 0"
+                        Margin="0 0 20 0"
                         Click="Settings_Click">
                     <Button.Content>
                         <Image Source="Settings.png"/>
                     </Button.Content>
-
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border Background="{TemplateBinding Background}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
                 </Button>
-                
-                
+
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Grid.Row="2">
+                    <Button Margin="10 0 30 0"
+                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="Resign">
+                        <Button.Content>
+                            <Image Source="Resign.png" Width="40"/>
+                        </Button.Content>
+                    </Button>
+
+                    <Button Margin="0 0 40 0"
+                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="Offer Draw">
+                        <Button.Content>
+                            <Image Source="DrawOffer.png" Width="40"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>

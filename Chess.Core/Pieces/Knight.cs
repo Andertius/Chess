@@ -12,7 +12,7 @@ namespace Chess.Core.Pieces
             : base(x, y, color, 3, Piece.Knight) { }
         
         /// <inheritdoc/>
-        public override bool IsValidMove(int newX, int newY, Board board)
+        public override bool CheckIfIsValidMove(int newX, int newY, Board board)
         {
             if (newX < 8 && newY < 8 && newX > -1 && newY > -1 && Color != board[newX, newY].OccupiedBy?.Color)
             {

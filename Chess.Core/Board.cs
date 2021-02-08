@@ -187,7 +187,7 @@ namespace Chess.Core
                 for (int j = 0; j < 8; j++)
                 {
                     if (mockBoard.GameBoard[i][j].OccupiedBy?.Color == color && mockBoard.GameBoard[i][j].OccupiedBy.Piece == piece &&
-                        mockBoard.GameBoard[i][j].OccupiedBy.IsValidMove(x, y, mockBoard))
+                        mockBoard.GameBoard[i][j].OccupiedBy.CheckIfIsValidMove(x, y, mockBoard))
                     {
                         return GameBoard[i][j].OccupiedBy;
                     }
