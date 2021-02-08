@@ -253,7 +253,7 @@ namespace Chess.Core.Pieces
 
         private void Promote(Board board)
         {
-            board[X, 7].Occupy(GameHandler.RequestPromotion(this));
+            board[X, Color == PieceColor.White ? 7 : 0].Occupy(GameHandler.RequestPromotion(this));
         }
     }
 }

@@ -49,18 +49,21 @@ namespace Chess
 
         public bool IsHolding { get; set; }
 
+        public bool JustPickedUp { get; set; }
+
         public event EventHandler Moved;
 
         public void Board_MouseLeftButtonDown(object sender, MouseEventArgs e)
         {
             var rect = (Rectangle)sender;
             string coordinates = (string)rect.Tag;
+            JustPickedUp = !(Start.X == Int32.Parse($"{coordinates[0]}") && Start.Y == Int32.Parse($"{coordinates[1]}"));
 
-            if ((Int32.Parse($"{coordinates[0]}") == Start.X && Int32.Parse($"{coordinates[1]}") == Start.Y) || (Start.X != -1 &&
-                Game.Board[Int32.Parse($"{coordinates[0]}"), Int32.Parse($"{coordinates[1]}")].OccupiedBy is null &&
-                (!Game.Board[Start.X, Start.Y].OccupiedBy?.CheckIfIsValidMove(Int32.Parse($"{coordinates[0]}"), Int32.Parse($"{coordinates[1]}"), Game.Board) ?? false)))
+            if (Start.X != -1 && Game.Board[Int32.Parse($"{coordinates[0]}"), Int32.Parse($"{coordinates[1]}")].OccupiedBy is null &&
+                (!Game.Board[Start.X, Start.Y].OccupiedBy?.CheckIfIsValidMove(Int32.Parse($"{coordinates[0]}"), Int32.Parse($"{coordinates[1]}"), Game.Board) ?? false))
             {
                 Start = (-1, -1);
+                JustPickedUp = false;
                 RenderBoard();
                 return;
             }
@@ -74,6 +77,7 @@ namespace Chess
                 IsHolding = true;
 
                 RenderBoard();
+                SelectSquare();
             }
         }
 
@@ -82,6 +86,14 @@ namespace Chess
             var rect = (Rectangle)sender;
             string coordinates = (string)rect.Tag;
             MouseCanvas.Children.Clear();
+
+            if (Int32.Parse($"{coordinates[0]}") == Start.X && Int32.Parse($"{coordinates[1]}") == Start.Y && !JustPickedUp)
+            {
+                Start = (-1, -1);
+                JustPickedUp = false;
+                RenderBoard();
+                return;
+            }
 
             if (!IsPromotingPawn && Start.X != -1)
             {
@@ -96,6 +108,11 @@ namespace Chess
             ToRenderOrNotToRender = false;
             IsHolding = false;
             RenderBoard();
+
+            if (Start.X != -1)
+            {
+                SelectSquare();
+            }
         }
 
         private void MouseMoveHandler(object sender, MouseEventArgs e)
@@ -106,7 +123,9 @@ namespace Chess
             {
                 if (ToRenderOrNotToRender)
                 {
-                    RenderBoard(true);
+                    RenderBoard();
+                    SelectSquare();
+
                     ToRenderOrNotToRender = false;
                 }
 
@@ -158,6 +177,7 @@ namespace Chess
                 }
 
                 Start = (-1, -1);
+                JustPickedUp = false;
             }
         }
 
@@ -198,7 +218,7 @@ namespace Chess
             player.Play();
         }
 
-        private void RenderBoard(bool isHolding = false)
+        private void RenderBoard()
         {
             BoardGrid.Children.Clear();
             Board.Clear();
@@ -301,27 +321,27 @@ namespace Chess
                     }
                 }
             }
+        }
 
-            if (IsHolding)
+        private void SelectSquare()
+        {
+            var sq = Board[7 - Start.Y][Start.X];
+
+            if ((7 - Start.Y) % 2 == 0 && Start.X % 2 == 0)
             {
-                var sq = Board[7 - Start.Y][Start.X];
-
-                if ((7 - Start.Y) % 2 == 0 && Start.X % 2 == 0)
-                {
-                    sq.Fill = new SolidColorBrush(Color.FromRgb(246, 246, 105));
-                }
-                else if ((7 - Start.Y) % 2 == 0 && Start.X % 2 == 1)
-                {
-                    sq.Fill = new SolidColorBrush(Color.FromRgb(186, 202, 43));
-                }
-                else if ((7 - Start.Y) % 2 == 1 && Start.X % 2 == 0)
-                {
-                    sq.Fill = new SolidColorBrush(Color.FromRgb(186, 202, 43));
-                }
-                else if ((7 - Start.Y) % 2 == 1 && Start.X % 2 == 1)
-                {
-                    sq.Fill = new SolidColorBrush(Color.FromRgb(246, 246, 105));
-                }
+                sq.Fill = new SolidColorBrush(Color.FromRgb(246, 246, 105));
+            }
+            else if ((7 - Start.Y) % 2 == 0 && Start.X % 2 == 1)
+            {
+                sq.Fill = new SolidColorBrush(Color.FromRgb(186, 202, 43));
+            }
+            else if ((7 - Start.Y) % 2 == 1 && Start.X % 2 == 0)
+            {
+                sq.Fill = new SolidColorBrush(Color.FromRgb(186, 202, 43));
+            }
+            else if ((7 - Start.Y) % 2 == 1 && Start.X % 2 == 1)
+            {
+                sq.Fill = new SolidColorBrush(Color.FromRgb(246, 246, 105));
             }
         }
 
@@ -354,25 +374,25 @@ namespace Chess
             IsPromotingPawn = true;
             PromotedPawnX = pawn.X;
 
-            PawnPromotionBorder.Visibility = Visibility.Visible;
+            //PawnPromotionBorder.Visibility = Visibility.Visible;
 
-            if (pawn.Color == PieceColor.White)
-            {
-                WhiteStackPanel.Visibility = Visibility.Visible;
-                BlackStackPanel.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                WhiteStackPanel.Visibility = Visibility.Collapsed;
-                BlackStackPanel.Visibility = Visibility.Visible;
-            }
+            //if (pawn.Color == PieceColor.White)
+            //{
+            //    WhiteStackPanel.Visibility = Visibility.Visible;
+            //    BlackStackPanel.Visibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    WhiteStackPanel.Visibility = Visibility.Collapsed;
+            //    BlackStackPanel.Visibility = Visibility.Visible;
+            //}
 
-            while(!PieceChosen)
-            { }
+            //while(!PieceChosen)
+            //{ }
 
-            e.Piece = PromotedPiece;
+            e.Piece = new Queen(pawn.X, Game.Turn == PieceColor.White ? 7 : 0, Game.Turn);
 
-            PawnPromotionBorder.Visibility = Visibility.Collapsed;
+            //PawnPromotionBorder.Visibility = Visibility.Collapsed;
             IsPromotingPawn = false;
             PromotedPiece = null;
             PieceChosen = false;

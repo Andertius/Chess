@@ -187,7 +187,7 @@
                             VerticalAlignment="Center"
                             Grid.Row="0">
                     <Button Margin="10 0 30 0"
-                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Resign">
@@ -197,7 +197,7 @@
                     </Button>
                     
                     <Button Margin="0 0 40 0"
-                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Offer Draw">
@@ -221,7 +221,7 @@
                             VerticalAlignment="Center"
                             Grid.Row="2">
                     <Button Margin="10 0 30 0"
-                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Resign">
@@ -231,7 +231,7 @@
                     </Button>
 
                     <Button Margin="0 0 40 0"
-                            ToolTipService.InitialShowDelay="1000" 
+                            ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Offer Draw">
