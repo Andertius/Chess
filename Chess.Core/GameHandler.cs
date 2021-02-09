@@ -46,20 +46,22 @@ namespace Chess.Core
         public Board Board { get; }
 
         /// <summary>
-        /// Gets total value the white player has on the board.
+        /// Gets all the pieces the white player has on the board.
         /// </summary>
-        public int TotalWhiteValue => Board.GameBoard
+        public List<ChessPiece> WhitePieces => Board.GameBoard
             .SelectMany(x => x)
             .Where(x => x.OccupiedBy?.Color == PieceColor.White)
-            .Select(x => x.OccupiedBy.Value).Sum();
+            .Select(x => x.OccupiedBy)
+            .ToList();
 
         /// <summary>
-        /// Gets total value the black player has on the board.
+        /// Gets all the pieces the black player has on the board.
         /// </summary>
-        public int TotalBlackValue => Board.GameBoard
+        public List<ChessPiece> BlackPieces => Board.GameBoard
             .SelectMany(x => x)
-            .Where(x => x.OccupiedBy?.Color == PieceColor.White)
-            .Select(x => x.OccupiedBy.Value).Sum();
+            .Where(x => x.OccupiedBy?.Color == PieceColor.Black)
+            .Select(x => x.OccupiedBy)
+            .ToList();
 
         /// <summary>
         /// Gets or sets the color of the current turn.
@@ -79,7 +81,7 @@ namespace Chess.Core
         /// <summary>
         /// Gets or sets the value indicating whether the game is in stalemate.
         /// </summary>
-        public bool IsInStalemate { get; private set; }
+        public StalemateBy? Stalemate { get; private set; }
 
         /// <summary>
         /// Gets the winner of the game.
@@ -136,7 +138,7 @@ namespace Chess.Core
             {
                 var state = new BoardState(Board[x, y].OccupiedBy, null, (x, y), (newX,newY));
 
-                if (Winner is null && !IsInStalemate && Board[x, y].Move(newX, newY, Board, out var capturedPiece, false))
+                if (Winner is null && Stalemate is null && Board[x, y].Move(newX, newY, Board, out var capturedPiece, false))
                 {
                     ManageGame(state, newX, newY, capturedPiece);
                     return true;
@@ -205,15 +207,82 @@ namespace Chess.Core
                     state.IsCheck = true;
                 }
             }
-            else if (fiftyRuleCounter == 100 || !Board.CheckIfHasValidMoves(oppositeColor) || CheckForThreefoldRepetition(state))
+            else
             {
-                IsInStalemate = true;
+                CheckForStalemate(oppositeColor, state);
             }
 
             Board.UnEnPassantAllPawns();
             BoardStates[Enum.GetName(typeof(PieceColor), Turn)].Add(state);
 
             Turn = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+        }
+
+        private bool CheckForStalemate(PieceColor oppositeColor, BoardState state)
+        {
+            if (CheckForInsufficientMaterial())
+            {
+                Stalemate = StalemateBy.InsuficientMaterial;
+            }
+            else if (fiftyRuleCounter == 100)
+            {
+                Stalemate = StalemateBy.FiftyMoveRule;
+            }
+            else if (!Board.CheckIfHasValidMoves(oppositeColor))
+            {
+                Stalemate = StalemateBy.NoValidMoves;
+            }
+            else if (CheckForThreefoldRepetition(state))
+            {
+                Stalemate = StalemateBy.Repetition;
+            }
+
+            return false;
+        }
+
+        private bool CheckForInsufficientMaterial()
+        {
+            return ((WhitePieces.Count == 1 || CheckForOnlyPiece(WhitePieces, Piece.Bishop) || CheckForOnlyPiece(WhitePieces, Piece.Knight)) &&
+                (BlackPieces.Count == 1 || CheckForOnlyPiece(BlackPieces, Piece.Bishop) || CheckForOnlyPiece(BlackPieces, Piece.Knight))) ||
+                WhitePieces.Count == 1 && CheckForTwoKnights(BlackPieces) || BlackPieces.Count == 1 && CheckForTwoKnights(WhitePieces);
+        }
+
+        private static bool CheckForOnlyPiece(IEnumerable<ChessPiece> pieces, Piece piece)
+        {
+            if (pieces.Count() != 2)
+            {
+                return false;
+            }
+
+            foreach (var item in pieces)
+            {
+                if (item.Piece == piece)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool CheckForTwoKnights(IEnumerable<ChessPiece> pieces)
+        {
+            if (pieces.Count() != 3)
+            {
+                return false;
+            }
+
+            int counter = 0;
+
+            foreach (var item in pieces)
+            {
+                if (item.Piece == Piece.Knight)
+                {
+                    counter++;
+                }
+            }
+
+            return counter == 2;
         }
 
         private bool CheckForThreefoldRepetition(BoardState state)

@@ -1,7 +1,7 @@
 ﻿namespace Chess.Core.Pieces
 {
     /// <summary>
-    /// The enum for the colorof the pieces.
+    /// The enum for the color of the pieces.
     /// </summary>
     public enum PieceColor
     {

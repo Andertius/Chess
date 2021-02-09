@@ -113,6 +113,33 @@ namespace Chess
             {
                 SelectSquare();
             }
+
+            if (!(Game.Winner is null))
+            {
+                MessageBox.Show($"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!");
+            }
+
+            switch (Game.Stalemate)
+            {
+                case StalemateBy.NoValidMoves:
+                    MessageBox.Show($"Stalemate. {Enum.GetName(typeof(PieceColor), Game.Turn)} has no valid moves.");
+                    break;
+
+                case StalemateBy.FiftyMoveRule:
+                    MessageBox.Show("Stalemate by y'all being boring.");
+                    break;
+
+                case StalemateBy.InsuficientMaterial:
+                    MessageBox.Show("Stalemate by insuficient material.");
+                    break;
+
+                case StalemateBy.Repetition:
+                    MessageBox.Show("Stalemate by repetition.");
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         private void MouseMoveHandler(object sender, MouseEventArgs e)
@@ -154,16 +181,6 @@ namespace Chess
             if (Game.Move(Start.X, Start.Y, End.X, End.Y))
             {
                 PlaySoundAfterMove();
-
-                if (!(Game.Winner is null))
-                {
-                    MessageBox.Show($"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!");
-                }
-
-                if (Game.IsInStalemate)
-                {
-                    MessageBox.Show("Stalemate.");
-                }
 
                 if (Game.Turn == PieceColor.White)
                 {

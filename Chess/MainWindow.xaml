@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Title="Chess" MinHeight="1000" MinWidth="1220" Background="#312e2b">
+        Title="Chess (not .com)" MinHeight="1000" MinWidth="1220" Background="#312e2b">
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
