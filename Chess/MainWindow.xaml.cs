@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 using Chess.Core;
 using Chess.Core.Pieces;
@@ -15,6 +16,12 @@ namespace Chess
 {
     public partial class MainWindow : Window
     {
+        private readonly DispatcherTimer whiteTimer;
+        private TimeSpan whiteTime;
+
+        private readonly DispatcherTimer blackTimer;
+        private TimeSpan blackTime;
+
         public MainWindow()
         {
             DataContext = this;
@@ -27,6 +34,75 @@ namespace Chess
             RenderBoard();
 
             Moved += Move;
+
+            whiteTime = TimeSpan.FromSeconds(600);
+            blackTime = TimeSpan.FromSeconds(600);
+
+            blackTimer = new DispatcherTimer(new TimeSpan(ticks: 10000), DispatcherPriority.Normal, delegate
+            {
+                string minutes = $"{blackTime.Hours * 60 + blackTime.Minutes}";
+                string seconds;
+
+                if (blackTime.Seconds / 10 == 0)
+                {
+                    seconds = $"0{blackTime.Seconds}";
+                }
+                else
+                {
+                    seconds = $"{blackTime.Seconds}";
+                }
+
+                BlackTimeTextBlock.Text = minutes + ":" + seconds;
+
+                if (blackTime == TimeSpan.Zero)
+                {
+                    blackTimer.Stop();
+                    Game.Winner = PieceColor.White;
+                    EndGame();
+                }
+
+                if (Game.Turn == PieceColor.Black)
+                {
+                    blackTime = blackTime.Add(TimeSpan.FromMilliseconds(-15));
+                }
+            }, Application.Current.Dispatcher);
+
+            whiteTimer = new DispatcherTimer(new TimeSpan(ticks: 10000), DispatcherPriority.Normal, delegate
+            {
+                string minutes = $"{whiteTime.Hours * 60 + whiteTime.Minutes}";
+                string seconds;
+
+                if (whiteTime.Seconds / 10 == 0)
+                {
+                    seconds = $"0{whiteTime.Seconds}";
+                }
+                else
+                {
+                    seconds = $"{whiteTime.Seconds}";
+                }
+
+                WhiteTimeTextBlock.Text = minutes + ":" + seconds;
+
+                if (whiteTime == TimeSpan.Zero)
+                {
+                    whiteTimer.Stop();
+                    Game.Winner = PieceColor.Black;
+                    EndGame();
+                }
+                else if (!(Game.Winner is null))
+                {
+                    whiteTimer.Stop();
+                    EndGame();
+                }
+
+                if (Game.Turn == PieceColor.White)
+                {
+                    whiteTime = whiteTime.Add(TimeSpan.FromMilliseconds(-15));
+                }
+            }, Application.Current.Dispatcher);
+
+            blackTimer.Start();
+            blackTimer.Start();
         }
 
         public GameHandler Game { get; }
@@ -81,6 +157,17 @@ namespace Chess
             }
         }
 
+        public void Board_MouseRightButtonDown(object sender, MouseEventArgs e)
+        {
+            Start = (-1, -1);
+            ToRenderOrNotToRender = false;
+            IsHolding = false;
+            JustPickedUp = false;
+
+            RenderBoard();
+            return;
+        }
+
         public void Board_MouseLeftButtonUp(object sender, MouseEventArgs e)
         {
             var rect = (Rectangle)sender;
@@ -112,33 +199,6 @@ namespace Chess
             if (Start.X != -1)
             {
                 SelectSquare();
-            }
-
-            if (!(Game.Winner is null))
-            {
-                MessageBox.Show($"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!");
-            }
-
-            switch (Game.Stalemate)
-            {
-                case StalemateBy.NoValidMoves:
-                    MessageBox.Show($"Stalemate. {Enum.GetName(typeof(PieceColor), Game.Turn)} has no valid moves.");
-                    break;
-
-                case StalemateBy.FiftyMoveRule:
-                    MessageBox.Show("Stalemate by y'all being boring.");
-                    break;
-
-                case StalemateBy.InsuficientMaterial:
-                    MessageBox.Show("Stalemate by insuficient material.");
-                    break;
-
-                case StalemateBy.Repetition:
-                    MessageBox.Show("Stalemate by repetition.");
-                    break;
-
-                default:
-                    break;
             }
         }
 
@@ -186,11 +246,17 @@ namespace Chess
                 {
                     WhiteClockBorder.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                     BlackClockBorder.Background = new SolidColorBrush(Color.FromRgb(44, 39, 35));
+
+                    WhiteTimeTextBlock.Foreground = Brushes.Black;
+                    BlackTimeTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(152, 150, 149));
                 }
                 else
                 {
                     WhiteClockBorder.Background = new SolidColorBrush(Color.FromRgb(152, 150, 149));
                     BlackClockBorder.Background = new SolidColorBrush(Color.FromRgb(38, 33, 27));
+
+                    WhiteTimeTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(57, 53, 49));
+                    BlackTimeTextBlock.Foreground = Brushes.White;
                 }
 
                 Start = (-1, -1);
@@ -258,6 +324,7 @@ namespace Chess
 
                     rect.MouseLeftButtonDown += Board_MouseLeftButtonDown;
                     rect.MouseLeftButtonUp += Board_MouseLeftButtonUp;
+                    rect.MouseRightButtonDown += Board_MouseRightButtonDown;
 
                     BoardGrid.Children.Add(rect);
 
@@ -382,6 +449,36 @@ namespace Chess
                 BoardGrid.Children.Add(image);
                 Grid.SetRow(image, i);
                 Grid.SetColumn(image, j);
+            }
+        }
+
+        private void EndGame()
+        {
+            if (!(Game.Winner is null))
+            {
+                MessageBox.Show($"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!");
+            }
+
+            switch (Game.Draw)
+            {
+                case DrawBy.Stalemate:
+                    MessageBox.Show($"Stalemate.");
+                    break;
+
+                case DrawBy.FiftyMoveRule:
+                    MessageBox.Show("Draw by y'all being boring.");
+                    break;
+
+                case DrawBy.InsuficientMaterial:
+                    MessageBox.Show("Draw by insuficient material.");
+                    break;
+
+                case DrawBy.Repetition:
+                    MessageBox.Show("Draw by repetition.");
+                    break;
+
+                default:
+                    break;
             }
         }
 

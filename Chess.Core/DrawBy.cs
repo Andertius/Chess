@@ -1,13 +1,13 @@
 ﻿namespace Chess.Core
 {
     /// <summary>
-    /// The enum to understand which stalemate the players got.
+    /// The enum to understand which draw the players got.
     /// </summary>
-    public enum StalemateBy
+    public enum DrawBy
     {
         FiftyMoveRule,
         InsuficientMaterial,
-        NoValidMoves,
         Repetition,
+        Stalemate,
     }
 }

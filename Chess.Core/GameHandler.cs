@@ -81,12 +81,12 @@ namespace Chess.Core
         /// <summary>
         /// Gets or sets the value indicating whether the game is in stalemate.
         /// </summary>
-        public StalemateBy? Stalemate { get; private set; }
+        public DrawBy? Draw { get; private set; }
 
         /// <summary>
         /// Gets the winner of the game.
         /// </summary>
-        public PieceColor? Winner { get; private set; }
+        public PieceColor? Winner { get; set; }
 
         /// <summary>
         /// Gets the <see cref="Dictionary{TKey, TValue}"/> of all the moves taken from the beginning of the game.
@@ -138,7 +138,7 @@ namespace Chess.Core
             {
                 var state = new BoardState(Board[x, y].OccupiedBy, null, (x, y), (newX,newY));
 
-                if (Winner is null && Stalemate is null && Board[x, y].Move(newX, newY, Board, out var capturedPiece, false))
+                if (Winner is null && Draw is null && Board[x, y].Move(newX, newY, Board, out var capturedPiece, false))
                 {
                     ManageGame(state, newX, newY, capturedPiece);
                     return true;
@@ -222,19 +222,19 @@ namespace Chess.Core
         {
             if (CheckForInsufficientMaterial())
             {
-                Stalemate = StalemateBy.InsuficientMaterial;
+                Draw = DrawBy.InsuficientMaterial;
             }
             else if (fiftyRuleCounter == 100)
             {
-                Stalemate = StalemateBy.FiftyMoveRule;
+                Draw = DrawBy.FiftyMoveRule;
             }
             else if (!Board.CheckIfHasValidMoves(oppositeColor))
             {
-                Stalemate = StalemateBy.NoValidMoves;
+                Draw = DrawBy.Stalemate;
             }
             else if (CheckForThreefoldRepetition(state))
             {
-                Stalemate = StalemateBy.Repetition;
+                Draw = DrawBy.Repetition;
             }
 
             return false;
