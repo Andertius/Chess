@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,10 +17,10 @@ namespace Chess
 {
     public partial class MainWindow : Window
     {
-        private readonly DispatcherTimer whiteTimer;
+        private DispatcherTimer whiteTimer;
         private TimeSpan whiteTime;
 
-        private readonly DispatcherTimer blackTimer;
+        private DispatcherTimer blackTimer;
         private TimeSpan blackTime;
 
         public MainWindow()
@@ -34,75 +35,6 @@ namespace Chess
             RenderBoard();
 
             Moved += Move;
-
-            whiteTime = TimeSpan.FromSeconds(600);
-            blackTime = TimeSpan.FromSeconds(600);
-
-            blackTimer = new DispatcherTimer(new TimeSpan(ticks: 10000), DispatcherPriority.Normal, delegate
-            {
-                string minutes = $"{blackTime.Hours * 60 + blackTime.Minutes}";
-                string seconds;
-
-                if (blackTime.Seconds / 10 == 0)
-                {
-                    seconds = $"0{blackTime.Seconds}";
-                }
-                else
-                {
-                    seconds = $"{blackTime.Seconds}";
-                }
-
-                BlackTimeTextBlock.Text = minutes + ":" + seconds;
-
-                if (blackTime == TimeSpan.Zero)
-                {
-                    blackTimer.Stop();
-                    Game.Winner = PieceColor.White;
-                    EndGame();
-                }
-
-                if (Game.Turn == PieceColor.Black)
-                {
-                    blackTime = blackTime.Add(TimeSpan.FromMilliseconds(-15));
-                }
-            }, Application.Current.Dispatcher);
-
-            whiteTimer = new DispatcherTimer(new TimeSpan(ticks: 10000), DispatcherPriority.Normal, delegate
-            {
-                string minutes = $"{whiteTime.Hours * 60 + whiteTime.Minutes}";
-                string seconds;
-
-                if (whiteTime.Seconds / 10 == 0)
-                {
-                    seconds = $"0{whiteTime.Seconds}";
-                }
-                else
-                {
-                    seconds = $"{whiteTime.Seconds}";
-                }
-
-                WhiteTimeTextBlock.Text = minutes + ":" + seconds;
-
-                if (whiteTime == TimeSpan.Zero)
-                {
-                    whiteTimer.Stop();
-                    Game.Winner = PieceColor.Black;
-                    EndGame();
-                }
-                else if (!(Game.Winner is null))
-                {
-                    whiteTimer.Stop();
-                    EndGame();
-                }
-
-                if (Game.Turn == PieceColor.White)
-                {
-                    whiteTime = whiteTime.Add(TimeSpan.FromMilliseconds(-15));
-                }
-            }, Application.Current.Dispatcher);
-
-            blackTimer.Start();
-            blackTimer.Start();
         }
 
         public GameHandler Game { get; }
@@ -126,6 +58,8 @@ namespace Chess
         public bool IsHolding { get; set; }
 
         public bool JustPickedUp { get; set; }
+
+        public (PieceColor Color, int MoveIndex) SelectedMove { get; set; }
 
         public event EventHandler Moved;
 
@@ -261,6 +195,79 @@ namespace Chess
 
                 Start = (-1, -1);
                 JustPickedUp = false;
+
+                AddMove();
+
+                if (whiteTimer is null)
+                {
+                    whiteTime = TimeSpan.FromSeconds(600);
+                    blackTime = TimeSpan.FromSeconds(600);
+
+                    blackTimer = new DispatcherTimer(new TimeSpan(ticks: 10000), DispatcherPriority.Normal, delegate
+                    {
+                        string minutes = $"{blackTime.Hours * 60 + blackTime.Minutes}";
+                        string seconds;
+
+                        if (blackTime.Seconds / 10 == 0)
+                        {
+                            seconds = $"0{blackTime.Seconds}";
+                        }
+                        else
+                        {
+                            seconds = $"{blackTime.Seconds}";
+                        }
+
+                        BlackTimeTextBlock.Text = minutes + ":" + seconds;
+
+                        if (blackTime == TimeSpan.Zero)
+                        {
+                            blackTimer.Stop();
+                            Game.Winner = PieceColor.White;
+                            EndGame();
+                        }
+
+                        if (Game.Turn == PieceColor.Black)
+                        {
+                            blackTime = blackTime.Add(TimeSpan.FromMilliseconds(-15));
+                        }
+                    }, Application.Current.Dispatcher);
+
+                    whiteTimer = new DispatcherTimer(new TimeSpan(ticks: 10000), DispatcherPriority.Normal, delegate
+                    {
+                        string minutes = $"{whiteTime.Hours * 60 + whiteTime.Minutes}";
+                        string seconds;
+
+                        if (whiteTime.Seconds / 10 == 0)
+                        {
+                            seconds = $"0{whiteTime.Seconds}";
+                        }
+                        else
+                        {
+                            seconds = $"{whiteTime.Seconds}";
+                        }
+
+                        WhiteTimeTextBlock.Text = minutes + ":" + seconds;
+
+                        if (whiteTime == TimeSpan.Zero)
+                        {
+                            whiteTimer.Stop();
+                            Game.Winner = PieceColor.Black;
+                            EndGame();
+                        }
+                        else if (!(Game.Winner is null))
+                        {
+                            whiteTimer.Stop();
+                            EndGame();
+                        }
+
+                        if (Game.Turn == PieceColor.White)
+                        {
+                            whiteTime = whiteTime.Add(TimeSpan.FromMilliseconds(-15));
+                        }
+                    }, Application.Current.Dispatcher);
+                    whiteTimer.Start();
+                    blackTimer.Start();
+                }
             }
         }
 
@@ -542,6 +549,84 @@ namespace Chess
                 new Queen(PromotedPawnX, 7, PieceColor.White) :
                 new Queen(PromotedPawnX, 0, PieceColor.Black);
             PieceChosen = true;
+        }
+
+        private void AddMove()
+        {
+            string color = Game.Turn == PieceColor.Black ? "White" : "Black";
+
+            if (Game.Turn == PieceColor.Black)
+            {
+                var rect = new Rectangle()
+                {
+                    Height = 30,
+                    Width = 310,
+                };
+
+                if (Game.BoardStates[color].Count % 2 == 1)
+                {
+                    rect.Fill = new SolidColorBrush(Color.FromRgb(35, 33, 31));
+                }
+                else
+                {
+                    rect.Fill = new SolidColorBrush(Color.FromRgb(43, 41, 38));
+                }
+
+                var row = new RowDefinition() { Height = new GridLength(30, GridUnitType.Pixel) };
+                MoveHistoryGrid.RowDefinitions.Add(row);
+
+                MoveHistoryGrid.Children.Add(rect);
+                Grid.SetRow(rect, Game.BoardStates[color].Count - 1);
+
+                var moveNumTextBlock = new TextBlock()
+                {
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Text = $"{Game.BoardStates[color].Count}.",
+                    Margin = new Thickness(5, 2, 0, 0),
+                    Foreground = Brushes.LightGray,
+                };
+
+                MoveHistoryGrid.Children.Add(moveNumTextBlock);
+                Grid.SetRow(moveNumTextBlock, Game.BoardStates[color].Count - 1);
+            }
+
+            var moveText = new Button()
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(30, 0, 0, 0),
+                Tag = $"{color} {Game.BoardStates[color].Count - 1}",
+            };
+
+            moveText.Margin = Game.Turn == PieceColor.Black ? new Thickness(30, 0, 0, 0) : new Thickness(125, 0, 0, 0);
+
+            moveText.Content = new TextBlock()
+            {
+                Text = $"{Game.BoardStates[color][^1]}",
+                Foreground = new SolidColorBrush(Color.FromRgb(195, 194, 193)),
+                FontWeight = FontWeights.Black,
+                FontSize = 14,
+            };
+
+            MoveHistoryGrid.Children.Add(moveText);
+            Grid.SetRow(moveText, Game.BoardStates[color].Count - 1);
+
+            SelectedMove = (Game.Turn == PieceColor.White ? PieceColor.Black : PieceColor.White, Game.BoardStates[color].Count - 1);
+            //UpdateSelectedMove();
+        }
+
+        private void UpdateSelectedMove()
+        {
+            int index = 0;
+
+            foreach (var state in Game.BoardStates["White"])
+            {
+                if (SelectedMove.Color != PieceColor.White || index != SelectedMove.MoveIndex)
+                {
+                    //TODO Continue this shit
+                }
+            }
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
