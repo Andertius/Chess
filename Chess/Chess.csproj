@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ButtonSprites\DrawOffer.png" />
+    <None Remove="ButtonSprites\FirstMove.png" />
+    <None Remove="ButtonSprites\LastMove.png" />
+    <None Remove="ButtonSprites\NextMove.png" />
+    <None Remove="ButtonSprites\PreviousMove.png" />
+    <None Remove="ButtonSprites\Resign.png" />
+    <None Remove="ButtonSprites\Settings.png" />
     <None Remove="DrawOffer.png" />
     <None Remove="models\black\bishop.png" />
     <None Remove="models\black\king.png" />
@@ -29,7 +36,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="DrawOffer.png" />
+    <Resource Include="ButtonSprites\DrawOffer.png" />
+    <Resource Include="ButtonSprites\FirstMove.png" />
+    <Resource Include="ButtonSprites\LastMove.png" />
+    <Resource Include="ButtonSprites\NextMove.png" />
+    <Resource Include="ButtonSprites\PreviousMove.png" />
+    <Resource Include="ButtonSprites\Resign.png" />
+    <Resource Include="ButtonSprites\Settings.png" />
     <Resource Include="models\black\bishop.png" />
     <Resource Include="models\black\king.png" />
     <Resource Include="models\black\knight.png" />
@@ -42,8 +55,6 @@
     <Resource Include="models\white\pawn.png" />
     <Resource Include="models\white\queen.png" />
     <Resource Include="models\white\rook.png" />
-    <Resource Include="Resign.png" />
-    <Resource Include="Settings.png" />
   </ItemGroup>
 
   <ItemGroup>

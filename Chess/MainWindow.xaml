@@ -203,6 +203,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
     
     <Grid>
@@ -372,7 +374,8 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
 
                 <StackPanel Orientation="Horizontal"
@@ -384,7 +387,7 @@
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Resign">
                         <Button.Content>
-                            <Image Source="Resign.png" Width="40"/>
+                            <Image Source="ButtonSprites/Resign.png" Width="40"/>
                         </Button.Content>
                     </Button>
                     
@@ -394,7 +397,7 @@
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Offer Draw">
                         <Button.Content>
-                            <Image Source="DrawOffer.png" Width="40"/>
+                            <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>
                     </Button>
                 </StackPanel>
@@ -405,7 +408,7 @@
                         Margin="0 0 20 0"
                         Click="Settings_Click">
                     <Button.Content>
-                        <Image Source="Settings.png"/>
+                        <Image Source="ButtonSprites/Settings.png"/>
                     </Button.Content>
                 </Button>
 
@@ -417,14 +420,63 @@
 
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
                             Grid.Row="2">
+                    <Button Margin="0 0 10 0"
+                            ToolTipService.InitialShowDelay="500" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="First Move"
+                            Click="FirstMove_Click">
+                        <Button.Content>
+                            <Image Source="ButtonSprites/FirstMove.png" Height="30"/>
+                        </Button.Content>
+                    </Button>
+
+                    <Button Margin="0 0 12 0"
+                            ToolTipService.InitialShowDelay="500" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="Previous Move"
+                            Click="PreviousMove_Click">
+                        <Button.Content>
+                            <Image Source="ButtonSprites/PreviousMove.png" Height="30"/>
+                        </Button.Content>
+                    </Button>
+
+                    <Button Margin="0 0 10 0"
+                            ToolTipService.InitialShowDelay="500" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="Next Move"
+                            Click="NextMove_Click">
+                        <Button.Content>
+                            <Image Source="ButtonSprites/NextMove.png" Height="30"/>
+                        </Button.Content>
+                    </Button>
+
+                    <Button Margin="0 0 10 0"
+                            ToolTipService.InitialShowDelay="500" 
+                            ToolTipService.ShowDuration="10000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTip="Last Move"
+                            Click="LastMove_Click">
+                        <Button.Content>
+                            <Image Source="ButtonSprites/LastMove.png" Height="30"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Grid.Row="3">
                     <Button Margin="10 0 30 0"
                             ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Resign">
                         <Button.Content>
-                            <Image Source="Resign.png" Width="40"/>
+                            <Image Source="ButtonSprites/Resign.png" Width="40"/>
                         </Button.Content>
                     </Button>
 
@@ -434,7 +486,7 @@
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Offer Draw">
                         <Button.Content>
-                            <Image Source="DrawOffer.png" Width="40"/>
+                            <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>
                     </Button>
                 </StackPanel>
