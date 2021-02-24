@@ -278,7 +278,7 @@
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="0"/>
                     </Border.Effect>
-                    
+
                     <local:SettingsUserControl x:Name="Settings"
                                                Height="250" Width="250"
                                                Visibility="Collapsed"
@@ -375,7 +375,7 @@
                                Margin="0 0 5 0"/>
                 </Border>
             </Grid>
-        </Grid>        
+        </Grid>
 
         <Border Grid.Row="1"
                 Grid.Column="3"
@@ -396,7 +396,8 @@
                             ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
-                            ToolTip="Resign">
+                            ToolTip="Resign"
+                            Click="BlackResign_Click">
                         <Button.Content>
                             <Image Source="ButtonSprites/Resign.png" Width="40"/>
                         </Button.Content>
@@ -411,6 +412,27 @@
                             <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>
                     </Button>
+
+                    <StackPanel x:Name="BlackConfirmation"
+                                Visibility="Collapsed"
+                                Orientation="Horizontal">
+                        <Button x:Name="BlackYes"
+                                Width="30"
+                                Margin="0 0 20 0"
+                                Click="BlackYes_Click">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/ButtonSprites/YesConfirm.png"/>
+                            </Button.Content>
+                        </Button>
+
+                        <Button x:Name="BlackNo"
+                                Width="30"
+                                Click="BlackNo_Click">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/ButtonSprites/NoConfirm.png"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
 
                 <Button Width="20" 
@@ -485,13 +507,14 @@
                             ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
-                            ToolTip="Resign">
+                            ToolTip="Resign"
+                            Click="WhiteResign_Click">
                         <Button.Content>
                             <Image Source="ButtonSprites/Resign.png" Width="40"/>
                         </Button.Content>
                     </Button>
 
-                    <Button Margin="0 0 40 0"
+                    <Button Margin="0 0 30 0"
                             ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
@@ -500,6 +523,27 @@
                             <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>
                     </Button>
+
+                    <StackPanel x:Name="WhiteConfirmation"
+                                Visibility="Collapsed"
+                                Orientation="Horizontal">
+                        <Button x:Name="WhiteYes"
+                                Width="30"
+                                Margin="0 0 20 0"
+                                Click="WhiteYes_Click">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/ButtonSprites/YesConfirm.png"/>
+                            </Button.Content>
+                        </Button>
+                        
+                        <Button x:Name="WhiteNo"
+                                Width="30"
+                                Click="WhiteNo_Click">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/ButtonSprites/NoConfirm.png"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>

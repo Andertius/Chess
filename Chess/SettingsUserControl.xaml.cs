@@ -20,8 +20,8 @@ namespace Chess
 
             if (TimedGames.IsChecked == false)
             {
-                WhiteTimeTextBlock.Foreground = Brushes.LightGray;
-                BlackTimeTextBlock.Foreground = Brushes.LightGray;
+                WhiteTimeTextBlock.Foreground = Brushes.Gray;
+                BlackTimeTextBlock.Foreground = Brushes.Gray;
             }
             else
             {
@@ -114,8 +114,8 @@ namespace Chess
             WhiteTimeTextBox.IsEnabled = false;
             BlackTimeTextBox.IsEnabled = false;
 
-            WhiteTimeTextBlock.Foreground = Brushes.LightGray;
-            BlackTimeTextBlock.Foreground = Brushes.LightGray;
+            WhiteTimeTextBlock.Foreground = Brushes.Gray;
+            BlackTimeTextBlock.Foreground = Brushes.Gray;
         }
     }
 }
