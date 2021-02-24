@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Title="Chess (not .com)" MinHeight="1000" MinWidth="1220" Background="#312e2b">
+        Title="Chess (not .com)" MinHeight="1000" MinWidth="1220" Background="#312E2B">
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
@@ -206,8 +206,8 @@
 
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
-    
-    <Grid>
+
+    <Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" x:Name="LeftColumn"/>
             <ColumnDefinition Width="800"/>
@@ -273,6 +273,17 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                 </Grid>
+
+                <Border>
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="0"/>
+                    </Border.Effect>
+                    
+                    <local:SettingsUserControl x:Name="Settings"
+                                               Height="250" Width="250"
+                                               Visibility="Collapsed"
+                                               Background="White"/>
+                </Border>
 
                 <Border Grid.RowSpan="8"
                         Grid.ColumnSpan="8"

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+    <PlaySounds>True</PlaySounds>
+    <HighlightMoves>True</HighlightMoves>
+    <ShowLegalMoves>True</ShowLegalMoves>
+    <TimedGames>True</TimedGames>
+    <WhiteTime>600</WhiteTime>
+    <BlackTime>600</BlackTime>
+    <ResignConfirmation>True</ResignConfirmation>
+    <AutoQueen>True</AutoQueen>
+</Settings>
