@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -28,6 +27,7 @@ namespace Chess
             Settings.SettingsClosed += Settings_Close;
             Offer.Yessed += DrawAccepted;
             Offer.Noed += DrawRejected;
+            GameEnd.NewGamed += GameEnd_NewGamed;
 
             Game = new GameHandler();
             GameHandler.PromotionRequested += Promote;
@@ -45,7 +45,7 @@ namespace Chess
             Moved += Move;
         }
 
-        public GameHandler Game { get; }
+        public GameHandler Game { get; private set; }
 
         public List<List<Rectangle>> Board { get; }
 
@@ -77,6 +77,8 @@ namespace Chess
 
         public bool IsOnLastMove { get; set; } = true;
 
+        public bool GameStarted { get; set; }
+
         public bool GameFinished { get; set; }
 
         public bool DrawOffered { get; set; }
@@ -85,62 +87,51 @@ namespace Chess
 
         private void EndGame()
         {
+            string message = String.Empty;
+
             if (Game.Winner is not null)
             {
                 if (!GameFinished)
                 {
-                    whiteTimer?.Stop();
-                    blackTimer?.Stop();
-                    RenderBoardOnly(Game.Board);
-                    MessageBox.Show($"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!");
-                    GameFinished = true;
+                    message = $"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!";
                 }                
             }
 
             switch (Game.Draw)
             {
                 case DrawBy.Stalemate:
-                    whiteTimer?.Stop();
-                    blackTimer?.Stop();
-                    RenderBoardOnly(Game.Board);
-                    MessageBox.Show($"Stalemate.");
-                    GameFinished = true;
+                    message = $"Stalemate.";
                     break;
 
                 case DrawBy.FiftyMoveRule:
-                    whiteTimer?.Stop();
-                    blackTimer?.Stop();
-                    RenderBoardOnly(Game.Board);
-                    MessageBox.Show("Draw by y'all being boring.");
-                    GameFinished = true;
+                    message = "Draw by y'all being boring.";
                     break;
 
                 case DrawBy.MutualAgreement:
-                    whiteTimer?.Stop();
-                    blackTimer?.Stop();
-                    RenderBoardOnly(Game.Board);
-                    MessageBox.Show("Draw by agreement.");
-                    GameFinished = true;
+                    message = "Draw by agreement.";
                     break;
 
                 case DrawBy.InsuficientMaterial:
-                    whiteTimer?.Stop();
-                    blackTimer?.Stop();
-                    RenderBoardOnly(Game.Board);
-                    MessageBox.Show("Draw by insuficient material.");
-                    GameFinished = true;
+                    message = "Draw by insuficient material.";
                     break;
 
                 case DrawBy.Repetition:
-                    whiteTimer?.Stop();
-                    blackTimer?.Stop();
-                    RenderBoardOnly(Game.Board);
-                    MessageBox.Show("Draw by repetition.");
-                    GameFinished = true;
+                    message = "Draw by repetition.";
+                    
                     break;
 
                 default:
                     break;
+            }
+
+            if (message != String.Empty)
+            {
+                whiteTimer?.Stop();
+                blackTimer?.Stop();
+                RenderBoardOnly(Game.Board);
+                GameEnd.Message.Text = message;
+                GameEnd.Visibility = Visibility.Visible;
+                GameFinished = true;
             }
         }
 
@@ -198,90 +189,6 @@ namespace Chess
         private void Settings_Close(object sender, EventArgs e)
         {
             RenderBoardOnly(Game.Board);
-        }
-
-        private void WhiteResign_Click(object sender, RoutedEventArgs e)
-        {
-            if (Game.Turn == PieceColor.White)
-            {
-                if (WhiteConfirmation.Visibility == Visibility.Visible)
-                {
-                    WhiteConfirmation.Visibility = Visibility.Collapsed;
-                }
-                else if (Settings.ResignConfirmation.IsChecked == false)
-                {
-                    Game.Winner = PieceColor.Black;
-                    EndGame();
-                }
-                else
-                {
-                    WhiteConfirmation.Visibility = Visibility.Visible;
-                }
-            }
-        }
-
-        private void WhiteYes_Click(object sender, RoutedEventArgs e)
-        {
-            Game.Winner = PieceColor.Black;
-            WhiteConfirmation.Visibility = Visibility.Collapsed;
-
-            EndGame();
-        }
-
-        private void WhiteNo_Click(object sender, RoutedEventArgs e)
-        {
-            WhiteConfirmation.Visibility = Visibility.Collapsed;
-        }
-
-        private void BlackResign_Click(object sender, RoutedEventArgs e)
-        {
-            if (Game.Turn == PieceColor.Black)
-            {
-                if (BlackConfirmation.Visibility == Visibility.Visible)
-                {
-                    BlackConfirmation.Visibility = Visibility.Collapsed;
-                }
-                else if (Settings.ResignConfirmation.IsChecked == false)
-                {
-                    Game.Winner = PieceColor.White;
-                    EndGame();
-                }
-                else
-                {
-                    BlackConfirmation.Visibility = Visibility.Visible;
-                }
-            }
-        }
-
-        private void BlackYes_Click(object sender, RoutedEventArgs e)
-        {
-            Game.Winner = PieceColor.White;
-            BlackConfirmation.Visibility = Visibility.Collapsed;
-
-            EndGame();
-        }
-
-        private void BlackNo_Click(object sender, RoutedEventArgs e)
-        {
-            BlackConfirmation.Visibility = Visibility.Collapsed;
-        }
-
-        private void Draw_Click(object sender, RoutedEventArgs e)
-        {
-            Offer.Visibility = Visibility.Visible;
-        }
-
-        private void DrawRejected(object sender, EventArgs e)
-        {
-            Offer.Visibility = Visibility.Collapsed;
-        }
-
-        private void DrawAccepted(object sender, EventArgs e)
-        {
-            Game.Draw = DrawBy.MutualAgreement;
-            Offer.Visibility = Visibility.Collapsed;
-
-            EndGame();
         }
     }
 }

@@ -2,11 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Chess"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"  d:Background="White"
              Height="250" Width="250"
-             d:DesignHeight="250" d:DesignWidth="250">
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
@@ -69,7 +68,9 @@
             <GradientStop Color="#FF558BED" Offset="0.5" />
             <GradientStop Color="#FF7DACF0" Offset="1" />
         </LinearGradientBrush>
+
         <SolidColorBrush x:Key="CheckedBlueBorder" Color="#FF143874" />
+
         <Style x:Key="SwitchStyle" TargetType="{x:Type CheckBox}">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
@@ -79,26 +80,73 @@
                         <ControlTemplate.Resources>
                             <Storyboard x:Key="OnChecking">
                                 <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="slider" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
-                                    <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="53" />
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00.2" Value="15" />
                                 </DoubleAnimationUsingKeyFrames>
+
+                                <ColorAnimation From="#FFBFBFBF"
+                                                To="#FF285AB3"
+                                                Storyboard.TargetName="GradStop1"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
+
+                                <ColorAnimation From="#FFCFCDCD"
+                                                To="#FF4184EC"
+                                                Storyboard.TargetName="GradStop2"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
+
+                                <ColorAnimation From="#FFECECEC"
+                                                To="#FF558BED"
+                                                Storyboard.TargetName="GradStop3"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
+
+                                <ColorAnimation From="#FFFBFBFB"
+                                                To="#FF7DACF0"
+                                                Storyboard.TargetName="GradStop4"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
                             </Storyboard>
                             <Storyboard x:Key="OnUnchecking">
                                 <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="slider" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
-                                    <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="0" />
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00.2" Value="0" />
                                 </DoubleAnimationUsingKeyFrames>
+
+                                <ColorAnimation From="#FF285AB3"
+                                                To="#FFBFBFBF"
+                                                Storyboard.TargetName="GradStop1"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
+
+                                <ColorAnimation From="#FF4184EC"
+                                                To="#FFCFCDCD"
+                                                Storyboard.TargetName="GradStop2"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
+
+                                <ColorAnimation From="#FF558BED"
+                                                To="#FFECECEC"
+                                                Storyboard.TargetName="GradStop3"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
+
+                                <ColorAnimation From="#FF7DACF0"
+                                                To="#FFFBFBFB"
+                                                Storyboard.TargetName="GradStop4"
+                                                Storyboard.TargetProperty="Color"
+                                                Duration="00:00:00.2"/>
                             </Storyboard>
                         </ControlTemplate.Resources>
                         <DockPanel x:Name="dockPanel">
                             <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" ContentTemplate="{TemplateBinding ContentTemplate}" RecognizesAccessKey="True" VerticalAlignment="Center" />
                             <Grid>
-                                <Border x:Name="BackgroundBorder" BorderBrush="#FF939393" BorderThickness="1" CornerRadius="3" Height="27" Width="94">
+                                <Border x:Name="BackgroundBorder" BorderBrush="#FF939393" BorderThickness="1" CornerRadius="10" Height="20" Width="40">
                                     <Border.Background>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#FFB5B5B5" Offset="0" />
-                                            <GradientStop Color="#FFDEDEDE" Offset="0.1" />
-                                            <GradientStop Color="#FFEEEEEE" Offset="0.5" />
-                                            <GradientStop Color="#FFFAFAFA" Offset="0.5" />
-                                            <GradientStop Color="#FFFEFEFE" Offset="1" />
+                                            <GradientStop Color="#FFBFBFBF" Offset="0" x:Name="GradStop1"/>
+                                            <GradientStop Color="#FFCFCDCD" Offset="0.1" x:Name="GradStop2" />
+                                            <GradientStop Color="#FFECECEC" Offset="0.5" x:Name="GradStop3" />
+                                            <GradientStop Color="#FFFBFBFB" Offset="1" x:Name="GradStop4" />
                                         </LinearGradientBrush>
                                     </Border.Background>
                                     <Grid>
@@ -106,11 +154,9 @@
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Ellipse x:Name="Off" Width="14" Height="14" Stroke="#FF7A7A7A" StrokeThickness="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        <Line x:Name="On" X1="0" Y1="0" X2="0" Y2="14" Stroke="#FF7A7A7A" StrokeThickness="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Grid>
                                 </Border>
-                                <Border BorderBrush="#FF939393" HorizontalAlignment="Left" x:Name="slider" Width="41" Height="27" BorderThickness="1" CornerRadius="3" RenderTransformOrigin="0.5,0.5" Margin="0">
+                                <Border BorderBrush="#FF939393" HorizontalAlignment="Left" x:Name="slider" Width="25" Height="20" BorderThickness="1" CornerRadius="10" RenderTransformOrigin="0.5,0.5" Margin="0">
                                     <Border.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform ScaleX="1" ScaleY="1" />
@@ -121,9 +167,9 @@
                                     </Border.RenderTransform>
                                     <Border.Background>
                                         <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                            <GradientStop Color="#FFF0F0F0" Offset="0" />
-                                            <GradientStop Color="#FFCDCDCD" Offset="0.1" />
-                                            <GradientStop Color="#FFFBFBFB" Offset="1" />
+                                            <GradientStop Color="#FF8F8F8F" Offset="0" />
+                                            <GradientStop Color="#FFA2A2A2" Offset="0.1" />
+                                            <GradientStop Color="#FFE4DEDE" Offset="1" />
                                         </LinearGradientBrush>
                                     </Border.Background>
                                 </Border>
@@ -137,14 +183,6 @@
                                 <Trigger.EnterActions>
                                     <BeginStoryboard Storyboard="{StaticResource OnChecking}" x:Name="OnChecking_BeginStoryboard" />
                                 </Trigger.EnterActions>
-                                <Setter TargetName="On" Property="Stroke" Value="White" />
-                                <Setter TargetName="Off" Property="Stroke" Value="White" />
-                                <!-- Change Orange or Blue color here -->
-                                <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource CheckedBlue}" />
-                                <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="{StaticResource CheckedBlueBorder}" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <!-- ToDo: Add Style for Isenabled == False -->
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -152,7 +190,7 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    
+
     <StackPanel>
         <Border BorderBrush="{x:Null}"
                 Height="30"
@@ -185,18 +223,19 @@
                 <ColumnDefinition Width="8"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="10"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
             <TextBlock Text="Play sounds"
@@ -211,14 +250,6 @@
                           x:Name="PlaySounds"
                           Grid.Column="2"
                           Grid.Row="1">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
             </CheckBox>
 
             <TextBlock Text="Show legal moves"
@@ -233,17 +264,9 @@
                       x:Name="ShowLegalMoves"
                       Grid.Column="2"
                       Grid.Row="2">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
             </CheckBox>
 
-            <TextBlock Text="Highlight moves"
+            <TextBlock Text="Highlight last move"
                        VerticalAlignment="Center"
                        Grid.Column="1"
                        Grid.Row="3"/>
@@ -255,14 +278,6 @@
                       x:Name="HighlightMoves"
                       Grid.Column="2"
                       Grid.Row="3">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
             </CheckBox>
 
             <TextBlock Text="Timed games"
@@ -279,14 +294,6 @@
                       Grid.Row="4"
                       Checked="TimedGames_Checked"
                       Unchecked="TimedGames_Unchecked">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
             </CheckBox>
 
             <TextBlock Text="White time"
@@ -298,13 +305,15 @@
             <TextBox x:Name="WhiteTimeTextBox"
                      Grid.Column="2"
                      Grid.Row="5"
-                     Width="75"/>
-            
+                     Width="75"
+                     Height="20"/>
+
             <TextBlock Text="sec"
                        Grid.Row="5"
                        Grid.Column="2"
-                       HorizontalAlignment="Right"
-                       Margin="0 0 3 0"/>
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Margin="125 0 0 0"/>
 
             <TextBlock Text="Black time"
                        VerticalAlignment="Center"
@@ -315,13 +324,15 @@
             <TextBox x:Name="BlackTimeTextBox"
                      Grid.Column="2"
                      Grid.Row="6"
-                     Width="75"/>
+                     Width="75"
+                     Height="20"/>
 
             <TextBlock Text="sec"
                        Grid.Row="6"
                        Grid.Column="2"
-                       HorizontalAlignment="Right"
-                       Margin="0 0 3 0"/>
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Margin="125 0 0 0"/>
 
             <TextBlock Text="Confirm resign"
                        VerticalAlignment="Center"
@@ -335,14 +346,6 @@
                       x:Name="ResignConfirmation"
                       Grid.Column="2"
                       Grid.Row="7">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
             </CheckBox>
 
             <TextBlock Text="Auto promote to queen"
@@ -357,14 +360,6 @@
                       x:Name="AutoQueen"
                       Grid.Column="2"
                       Grid.Row="8">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
             </CheckBox>
         </Grid>
     </StackPanel>

@@ -14,6 +14,7 @@ namespace Chess
             if (Game.Move(Start.X, Start.Y, End.X, End.Y))
             {
                 HandleSounds();
+                GameStarted = true;
                 WhiteConfirmation.Visibility = Visibility.Collapsed;
                 BlackConfirmation.Visibility = Visibility.Collapsed;
 

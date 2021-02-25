@@ -102,7 +102,7 @@ namespace Chess
         {
             MouseCanvas.Children.Clear();
 
-            if (Start.X != -1 && IsHolding)
+            if (Start.X != -1 && IsHolding && !GameFinished)
             {
                 if (ToRenderOrNotToRender)
                 {

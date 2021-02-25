@@ -280,9 +280,22 @@
                     </Border.Effect>
 
                     <local:SettingsUserControl x:Name="Settings"
-                                               Height="250" Width="250"
+                                               Height="300" Width="300"
                                                Visibility="Collapsed"
                                                Background="White"/>
+                </Border>
+
+
+                <Border>
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="0"/>
+                    </Border.Effect>
+
+                    <local:GameEndUserControl Background="White"
+                                              Height="300"
+                                              Width="300"
+                                              Visibility="Collapsed"
+                                              x:Name="GameEnd"/>
                 </Border>
 
                 <Border Grid.RowSpan="8"
