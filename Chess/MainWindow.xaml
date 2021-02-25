@@ -280,7 +280,6 @@
                     </Border.Effect>
 
                     <local:SettingsUserControl x:Name="Settings"
-                                               Height="300" Width="300"
                                                Visibility="Collapsed"
                                                Background="White"/>
                 </Border>
@@ -292,8 +291,6 @@
                     </Border.Effect>
 
                     <local:GameEndUserControl Background="White"
-                                              Height="300"
-                                              Width="300"
                                               Visibility="Collapsed"
                                               x:Name="GameEnd"/>
                 </Border>
@@ -422,7 +419,7 @@
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Offer Draw"
                             x:Name="BlackDraw"
-                            Click="Draw_Click">
+                            Click="DrawFromBlack_Click">
                         <Button.Content>
                             <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>
@@ -460,25 +457,43 @@
                     </Button.Content>
                 </Button>
 
-                <ScrollViewer Grid.Row="1"
-                              Margin="20 30 20 70"
-                              x:Name="MoveHistoryScrollViewer">
-                    <Grid x:Name="MoveHistoryGrid"/>
-                </ScrollViewer>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="70"/>
+                    </Grid.RowDefinitions>
 
-                <Border Grid.Row="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="0"/>
-                    </Border.Effect>
-                    
-                    <local:DrawOfferUserControl Background="White"
-                                                Height="75"
-                                                Width="200"
-                                                Visibility="Collapsed"
-                                                x:Name="Offer"/>
-                </Border>
+                    <Border Grid.Row="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="0"/>
+                        </Border.Effect>
+
+                        <local:DrawOfferUserControl Background="White"
+                                                    Visibility="Collapsed"
+                                                    x:Name="WhiteOffer"/>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1"
+                                  Margin="20 0 20 0"
+                                  x:Name="MoveHistoryScrollViewer">
+                        <Grid x:Name="MoveHistoryGrid"/>
+                    </ScrollViewer>
+
+                    <Border Grid.Row="2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="0"/>
+                        </Border.Effect>
+
+                        <local:DrawOfferUserControl Background="White"
+                                                    Visibility="Collapsed"
+                                                    x:Name="BlackOffer"/>
+                    </Border>
+                </Grid>
 
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center"
@@ -549,7 +564,7 @@
                             ToolTipService.BetweenShowDelay="10000" 
                             ToolTip="Offer Draw"
                             x:Name="WhiteDraw"
-                            Click="Draw_Click">
+                            Click="DrawFromWhite_Click">
                         <Button.Content>
                             <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>

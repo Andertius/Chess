@@ -11,7 +11,7 @@ namespace Chess
     {
         private void WhiteResign_Click(object sender, RoutedEventArgs e)
         {
-            if (GameStarted)
+            if (GameStarted && !DrawOffered)
             {
                 if (WhiteConfirmation.Visibility == Visibility.Visible)
                 {
@@ -20,6 +20,7 @@ namespace Chess
                 else if (Settings.ResignConfirmation.IsChecked == false)
                 {
                     Game.Winner = PieceColor.Black;
+                    Game.Win = WonBy.Resignation;
                     EndGame();
                 }
                 else
@@ -33,6 +34,7 @@ namespace Chess
         {
             Game.Winner = PieceColor.Black;
             WhiteConfirmation.Visibility = Visibility.Collapsed;
+            Game.Win = WonBy.Resignation;
 
             EndGame();
         }
@@ -44,7 +46,7 @@ namespace Chess
 
         private void BlackResign_Click(object sender, RoutedEventArgs e)
         {
-            if (GameStarted)
+            if (GameStarted && !DrawOffered)
             {
                 if (BlackConfirmation.Visibility == Visibility.Visible)
                 {
@@ -53,6 +55,7 @@ namespace Chess
                 else if (Settings.ResignConfirmation.IsChecked == false)
                 {
                     Game.Winner = PieceColor.White;
+                    Game.Win = WonBy.Resignation;
                     EndGame();
                 }
                 else
@@ -66,6 +69,7 @@ namespace Chess
         {
             Game.Winner = PieceColor.White;
             BlackConfirmation.Visibility = Visibility.Collapsed;
+            Game.Win = WonBy.Resignation;
 
             EndGame();
         }
@@ -75,23 +79,53 @@ namespace Chess
             BlackConfirmation.Visibility = Visibility.Collapsed;
         }
 
-        private void Draw_Click(object sender, RoutedEventArgs e)
+        private void DrawFromWhite_Click(object sender, RoutedEventArgs e)
         {
             if (GameStarted)
             {
-                Offer.Visibility = Visibility.Visible;
+                if (DrawOffered)
+                {
+                    DrawAccepted(this, e);
+                    return;
+                }
+
+                DrawOffered = true;
+                WhiteOffer.Visibility = Visibility.Visible;
+                WhiteConfirmation.Visibility = Visibility.Collapsed;
+                BlackConfirmation.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void DrawFromBlack_Click(object sender, RoutedEventArgs e)
+        {
+            if (GameStarted)
+            {
+                if (DrawOffered)
+                {
+                    DrawAccepted(this, e);
+                    return;
+                }
+
+                DrawOffered = true;
+                BlackOffer.Visibility = Visibility.Visible;
+                WhiteConfirmation.Visibility = Visibility.Collapsed;
+                BlackConfirmation.Visibility = Visibility.Collapsed;
             }
         }
 
         private void DrawRejected(object sender, EventArgs e)
         {
-            Offer.Visibility = Visibility.Collapsed;
+            DrawOffered = false;
+            WhiteOffer.Visibility = Visibility.Collapsed;
+            BlackOffer.Visibility = Visibility.Collapsed;
         }
 
         private void DrawAccepted(object sender, EventArgs e)
         {
+            DrawOffered = false;
             Game.Draw = DrawBy.MutualAgreement;
-            Offer.Visibility = Visibility.Collapsed;
+            WhiteOffer.Visibility = Visibility.Collapsed;
+            BlackOffer.Visibility = Visibility.Collapsed;
 
             EndGame();
         }
@@ -101,6 +135,10 @@ namespace Chess
             GameStarted = false;
             GameFinished = false;
             GameEnd.Visibility = Visibility.Collapsed;
+            WhiteOffer.Visibility = Visibility.Collapsed;
+            BlackOffer.Visibility = Visibility.Collapsed;
+            WhiteConfirmation.Visibility = Visibility.Collapsed;
+            BlackConfirmation.Visibility = Visibility.Collapsed;
             Game = new GameHandler();
 
             MoveHistoryGrid.Children.Clear();

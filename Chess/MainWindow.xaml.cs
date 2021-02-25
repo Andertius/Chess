@@ -25,9 +25,13 @@ namespace Chess
             InitializeComponent();
 
             Settings.SettingsClosed += Settings_Close;
-            Offer.Yessed += DrawAccepted;
-            Offer.Noed += DrawRejected;
             GameEnd.NewGamed += GameEnd_NewGamed;
+
+            WhiteOffer.Yessed += DrawAccepted;
+            WhiteOffer.Noed += DrawRejected;
+
+            BlackOffer.Yessed += DrawAccepted;
+            BlackOffer.Noed += DrawRejected;
 
             Game = new GameHandler();
             GameHandler.PromotionRequested += Promote;
@@ -94,6 +98,21 @@ namespace Chess
                 if (!GameFinished)
                 {
                     message = $"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!";
+
+                    switch (Game.Win)
+                    {
+                        case WonBy.Checkmate:
+                            GameEnd.Reason.Text = "by Checkmate";
+                            break;
+
+                        case WonBy.Resignation:
+                            GameEnd.Reason.Text = "by Resignation";
+                            break;
+
+                        case WonBy.Timeout:
+                            GameEnd.Reason.Text = "by Timeout";
+                            break;
+                    }
                 }                
             }
 

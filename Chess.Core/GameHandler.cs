@@ -79,9 +79,14 @@ namespace Chess.Core
         public bool IsBlackUnderCheck { get; private set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether the game is in stalemate.
+        /// Gets or sets the type of a draw the players got.
         /// </summary>
         public DrawBy? Draw { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value indicating how the player won.
+        /// </summary>
+        public WonBy? Win { get; set; }
 
         /// <summary>
         /// Gets the winner of the game.
@@ -201,6 +206,7 @@ namespace Chess.Core
                 {
                     Winner = Turn;
                     state.IsMate = true;
+                    Win = WonBy.Checkmate;
                 }
                 else
                 {

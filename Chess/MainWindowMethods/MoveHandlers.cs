@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 
+using Chess.Core;
 using Chess.Core.Pieces;
 
 namespace Chess
@@ -17,6 +18,8 @@ namespace Chess
                 GameStarted = true;
                 WhiteConfirmation.Visibility = Visibility.Collapsed;
                 BlackConfirmation.Visibility = Visibility.Collapsed;
+
+                DrawRejected(this, e);
 
                 if (Game.Turn == PieceColor.White)
                 {
@@ -72,6 +75,7 @@ namespace Chess
                 if (blackTime <= TimeSpan.Zero)
                 {
                     Game.Winner = PieceColor.White;
+                    Game.Win = WonBy.Timeout;
                     EndGame();
                 }
                 else if (Game.Winner is not null)
@@ -104,6 +108,7 @@ namespace Chess
                 if (whiteTime <= TimeSpan.Zero)
                 {
                     Game.Winner = PieceColor.Black;
+                    Game.Win = WonBy.Timeout;
                     EndGame();
                 }
                 else if (Game.Winner is not null)
