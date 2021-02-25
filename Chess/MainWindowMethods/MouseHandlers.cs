@@ -13,7 +13,7 @@ namespace Chess
     {
         public void Board_MouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            if (IsOnLastMove && Settings.Visibility == Visibility.Collapsed)
+            if (!GameFinished && IsOnLastMove && Settings.Visibility == Visibility.Collapsed)
             {
                 var rect = (Rectangle)sender;
                 string coordinates = (string)rect.Tag;
@@ -44,7 +44,7 @@ namespace Chess
 
         public void Board_MouseRightButtonDown(object sender, MouseEventArgs e)
         {
-            if (IsOnLastMove && Settings.Visibility == Visibility.Collapsed)
+            if (!GameFinished && IsOnLastMove && Settings.Visibility == Visibility.Collapsed)
             {
                 Start = (-1, -1);
                 ToRenderOrNotToRender = false;
@@ -61,7 +61,7 @@ namespace Chess
             {
                 Settings.Exit(this, new RoutedEventArgs());
             }
-            else if (IsOnLastMove)
+            else if (!GameFinished && IsOnLastMove)
             {
                 var rect = (Rectangle)sender;
                 string coordinates = (string)rect.Tag;

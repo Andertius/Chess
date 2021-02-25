@@ -81,7 +81,7 @@ namespace Chess.Core
         /// <summary>
         /// Gets or sets the value indicating whether the game is in stalemate.
         /// </summary>
-        public DrawBy? Draw { get; private set; }
+        public DrawBy? Draw { get; set; }
 
         /// <summary>
         /// Gets the winner of the game.

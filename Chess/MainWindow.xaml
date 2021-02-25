@@ -407,7 +407,9 @@
                             ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
-                            ToolTip="Offer Draw">
+                            ToolTip="Offer Draw"
+                            x:Name="BlackDraw"
+                            Click="Draw_Click">
                         <Button.Content>
                             <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>
@@ -450,6 +452,20 @@
                               x:Name="MoveHistoryScrollViewer">
                     <Grid x:Name="MoveHistoryGrid"/>
                 </ScrollViewer>
+
+                <Border Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="0"/>
+                    </Border.Effect>
+                    
+                    <local:DrawOfferUserControl Background="White"
+                                                Height="75"
+                                                Width="200"
+                                                Visibility="Collapsed"
+                                                x:Name="Offer"/>
+                </Border>
 
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center"
@@ -518,7 +534,9 @@
                             ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
                             ToolTipService.BetweenShowDelay="10000" 
-                            ToolTip="Offer Draw">
+                            ToolTip="Offer Draw"
+                            x:Name="WhiteDraw"
+                            Click="Draw_Click">
                         <Button.Content>
                             <Image Source="ButtonSprites/DrawOffer.png" Width="40"/>
                         </Button.Content>

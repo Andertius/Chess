@@ -7,6 +7,7 @@
     {
         FiftyMoveRule,
         InsuficientMaterial,
+        MutualAgreement,
         Repetition,
         Stalemate,
     }
