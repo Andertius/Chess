@@ -65,6 +65,11 @@ namespace Chess.Core.Pieces
         public int Value { get; }
 
         /// <summary>
+        /// Gets or sets the values indicating whether the piece is a promoted pawn.
+        /// </summary>
+        public bool PromotedFormPawn { get; set; }
+
+        /// <summary>
         /// Moves the <see cref="ChessPiece"/> if it is a valid move, freeing up the previous <see cref="Square"/>.
         /// </summary>
         /// <param name="newX">The destination file.</param>

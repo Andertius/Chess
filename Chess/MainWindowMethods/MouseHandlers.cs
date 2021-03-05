@@ -17,14 +17,14 @@ namespace Chess
             {
                 var rect = (Rectangle)sender;
                 string coordinates = (string)rect.Tag;
-                JustPickedUp = !(Start.X == Int32.Parse($"{coordinates[0]}") && Start.Y == Int32.Parse($"{coordinates[1]}"));
+                JustPickedUp = Start.X != Int32.Parse($"{coordinates[0]}") || Start.Y != Int32.Parse($"{coordinates[1]}");
 
                 if (Start.X != -1 && Game.Board[Int32.Parse($"{coordinates[0]}"), Int32.Parse($"{coordinates[1]}")].OccupiedBy is null &&
                     (!Game.Board[Start.X, Start.Y].OccupiedBy?.CheckIfIsValidMove(Int32.Parse($"{coordinates[0]}"), Int32.Parse($"{coordinates[1]}"), Game.Board) ?? false))
                 {
                     Start = (-1, -1);
                     JustPickedUp = false;
-                    RenderBoardAfterMove();
+                    RenderModels(Game.Board);
                     return;
                 }
 
@@ -35,8 +35,9 @@ namespace Chess
                     Start = (Int32.Parse($"{coordinates[0]}"), Int32.Parse($"{coordinates[1]}"));
                     ToRenderOrNotToRender = true;
                     IsHolding = true;
+                    MouseMoveHandler(this, e);
 
-                    RenderBoardAfterMove();
+                    RenderModels(Game.Board);
                     SelectSquare();
                 }
             }
@@ -51,7 +52,7 @@ namespace Chess
                 IsHolding = false;
                 JustPickedUp = false;
 
-                RenderBoardAfterMove();
+                RenderModels(Game.Board);
             }
         }
 
@@ -71,7 +72,7 @@ namespace Chess
                 {
                     Start = (-1, -1);
                     JustPickedUp = false;
-                    RenderBoardAfterMove();
+                    RenderModels(Game.Board);
                     return;
                 }
 
@@ -87,7 +88,7 @@ namespace Chess
 
                 ToRenderOrNotToRender = false;
                 IsHolding = false;
-                RenderBoardAfterMove();
+                RenderModels(Game.Board);
 
                 if (Start.X != -1)
                 {
@@ -106,7 +107,7 @@ namespace Chess
             {
                 if (ToRenderOrNotToRender)
                 {
-                    RenderBoardAfterMove();
+                    RenderModels(Game.Board);
                     SelectSquare();
 
                     ToRenderOrNotToRender = false;

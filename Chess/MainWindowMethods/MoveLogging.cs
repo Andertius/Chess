@@ -126,7 +126,7 @@ namespace Chess
         private void UpdateBoard()
         {
             var board = Game.BoardStates[$"{Enum.GetName(typeof(PieceColor), SelectedMove.Color)}"][SelectedMove.MoveIndex].Board;
-            RenderBoardOnly(board);
+            RenderModels(board);
 
             if (Settings.PlaySounds.IsChecked == true)
             {

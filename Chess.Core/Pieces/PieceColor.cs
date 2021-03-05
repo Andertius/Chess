@@ -5,7 +5,7 @@
     /// </summary>
     public enum PieceColor
     {
-        White,
-        Black
+        White = 1,
+        Black = ~White,
     }
 }

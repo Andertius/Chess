@@ -157,7 +157,7 @@ namespace Chess
             WhiteTimeTextBlock.Text = "";
             BlackTimeTextBlock.Text = "";
 
-            RenderBoardOnly(Game.Board);
+            RenderModels(Game.Board);
         }
     }
 }

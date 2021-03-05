@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -44,7 +47,8 @@ namespace Chess
                 { "Black", new List<string>() },
             };
 
-            RenderBoardOnly(Game.Board);
+            RenderBoard();
+            RenderModels(Game.Board);
 
             Moved += Move;
         }
@@ -102,15 +106,15 @@ namespace Chess
                     switch (Game.Win)
                     {
                         case WonBy.Checkmate:
-                            GameEnd.Reason.Text = "by Checkmate";
+                            GameEnd.Reason.Text = "Checkmate.";
                             break;
 
                         case WonBy.Resignation:
-                            GameEnd.Reason.Text = "by Resignation";
+                            GameEnd.Reason.Text = "Resignation.";
                             break;
 
                         case WonBy.Timeout:
-                            GameEnd.Reason.Text = "by Timeout";
+                            GameEnd.Reason.Text = "Timeout.";
                             break;
                     }
                 }                
@@ -119,24 +123,28 @@ namespace Chess
             switch (Game.Draw)
             {
                 case DrawBy.Stalemate:
-                    message = $"Stalemate.";
+                    message = $"Draw";
+                    GameEnd.Reason.Text = "Stalemate.";
                     break;
 
                 case DrawBy.FiftyMoveRule:
-                    message = "Draw by y'all being boring.";
+                    message = "Draw";
+                    GameEnd.Reason.Text = "by y'all being boring.";
                     break;
 
                 case DrawBy.MutualAgreement:
-                    message = "Draw by agreement.";
+                    message = "Draw";
+                    GameEnd.Reason.Text = "Agreement.";
                     break;
 
                 case DrawBy.InsuficientMaterial:
-                    message = "Draw by insuficient material.";
+                    message = "Draw";
+                    GameEnd.Reason.Text = "Insuficient material.";
                     break;
 
                 case DrawBy.Repetition:
-                    message = "Draw by repetition.";
-                    
+                    message = "Draw";
+                    GameEnd.Reason.Text = "Repetition.";
                     break;
 
                 default:
@@ -147,7 +155,7 @@ namespace Chess
             {
                 whiteTimer?.Stop();
                 blackTimer?.Stop();
-                RenderBoardOnly(Game.Board);
+                RenderModels(Game.Board);
                 GameEnd.Message.Text = message;
                 GameEnd.Visibility = Visibility.Visible;
                 GameFinished = true;
@@ -207,7 +215,46 @@ namespace Chess
 
         private void Settings_Close(object sender, EventArgs e)
         {
-            RenderBoardOnly(Game.Board);
+            RenderModels(Game.Board);
+        }
+
+        private void RenderCapturedPieces()
+        {
+            CapturedByWhite.Children.Clear();
+            CapturedByBlack.Children.Clear();
+
+            foreach (var piece in Game.Captured["White"])
+            {
+                Image pawn = new Image() { Width = 35 };
+                pawn.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "Black", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
+                CapturedByWhite.Children.Add(pawn);
+            }
+
+            foreach (var piece in Game.Captured["Black"])
+            {
+                Image pawn = new Image() { Width = 35 };
+                pawn.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "White", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
+                CapturedByBlack.Children.Add(pawn);
+            }
+
+            var whiteValue = Game.Captured["White"].Sum(x => x.Value);
+            var blackValue = Game.Captured["Black"].Sum(x => x.Value);
+            var txtblck = new TextBlock()
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = Brushes.White,
+            };
+
+            if (whiteValue > blackValue)
+            {
+                txtblck.Text = $"+{whiteValue - blackValue}";
+                CapturedByWhite.Children.Add(txtblck);
+            }
+            else if (whiteValue < blackValue)
+            {
+                txtblck.Text = $"+{blackValue - whiteValue}";
+                CapturedByBlack.Children.Add(txtblck);
+            }
         }
     }
 }

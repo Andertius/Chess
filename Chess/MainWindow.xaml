@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Title="Chess (not .com)" MinHeight="1000" MinWidth="1220" Background="#312E2B">
+        Title="chess.ua" MinHeight="1000" MinWidth="1220" Background="#312E2B">
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
@@ -42,7 +42,7 @@
                 </GradientStopCollection>
             </GradientBrush.GradientStops>
         </LinearGradientBrush>
-        
+
         <LinearGradientBrush x:Key="StandardBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -51,7 +51,7 @@
                 </GradientStopCollection>
             </GradientBrush.GradientStops>
         </LinearGradientBrush>
-        
+
         <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -86,7 +86,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
             <Setter Property="Visibility" Value="Hidden"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -139,7 +139,7 @@
                 <RepeatButton Grid.Row="3" Style="{StaticResource ScrollBarLineButton}" Height="18" Command="ScrollBar.LineDownCommand" Content="M 0 0 L 4 4 L 8 0 Z"/>
             </Grid>
         </ControlTemplate>
-        
+
         <ControlTemplate x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -163,7 +163,7 @@
                 <RepeatButton Grid.Column="3" Style="{StaticResource ScrollBarLineButton}" Width="18" Command="ScrollBar.LineRightCommand" Content="M 0 0 L 4 4 L 0 8 Z"/>
             </Grid>
         </ControlTemplate>
-        
+
         <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -235,6 +235,9 @@
                     <ColumnDefinition Width="125"/>
                 </Grid.ColumnDefinitions>
 
+                <StackPanel x:Name="CapturedByBlack"
+                            Orientation="Horizontal"/>
+
                 <Border x:Name="BlackClockBorder"
                         Background="#2c2723"
                         Grid.Column="1"
@@ -249,8 +252,32 @@
                 </Border>
             </Grid>
 
-            <Grid Grid.Row="1" MouseMove="MouseMoveHandler">
+            <Grid Grid.Row="1" MouseMove="MouseMoveHandler" >
                 <Grid x:Name="BoardGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                </Grid>
+
+                <Grid x:Name="ModelGrid" IsHitTestVisible="False">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -373,6 +400,9 @@
                     <ColumnDefinition Width="125"/>
                 </Grid.ColumnDefinitions>
 
+                <StackPanel x:Name="CapturedByWhite"
+                            Orientation="Horizontal"/>
+
                 <Border x:Name="WhiteClockBorder"
                         Background="#FFFFFF"
                         Grid.Column="1"
@@ -412,7 +442,7 @@
                             <Image Source="ButtonSprites/Resign.png" Width="40"/>
                         </Button.Content>
                     </Button>
-                    
+
                     <Button Margin="0 0 40 0"
                             ToolTipService.InitialShowDelay="500" 
                             ToolTipService.ShowDuration="10000" 
@@ -581,7 +611,7 @@
                                 <Image Source="pack://application:,,,/ButtonSprites/YesConfirm.png"/>
                             </Button.Content>
                         </Button>
-                        
+
                         <Button x:Name="WhiteNo"
                                 Width="30"
                                 Click="WhiteNo_Click">

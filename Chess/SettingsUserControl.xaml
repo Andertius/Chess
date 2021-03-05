@@ -166,9 +166,9 @@
                                     </Border.RenderTransform>
                                     <Border.Background>
                                         <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                            <GradientStop Color="#FF8F8F8F" Offset="0" />
-                                            <GradientStop Color="#FFA2A2A2" Offset="0.1" />
-                                            <GradientStop Color="#FFE4DEDE" Offset="1" />
+                                            <GradientStop Color="#FFBFBFBF" Offset="0" />
+                                            <GradientStop Color="#FFB6B6B6" Offset="0.1" />
+                                            <GradientStop Color="#FFE2E2E2" Offset="1" />
                                         </LinearGradientBrush>
                                     </Border.Background>
                                 </Border>

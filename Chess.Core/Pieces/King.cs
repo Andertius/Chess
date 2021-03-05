@@ -24,6 +24,12 @@ namespace Chess.Core.Pieces
         {
             if ((newX != X || newY != Y) && CheckIfIsValidMove(newX, newY, board))
             {
+                if (!isMock && CheckForChecksAfterMove(newX, newY, board))
+                {
+                    capturedPiece = null;
+                    return false;
+                }
+
                 JustLongCastled = false;
                 JustShortCastled = false;
 

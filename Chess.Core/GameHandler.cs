@@ -128,7 +128,8 @@ namespace Chess.Core
             {
                 throw new ArgumentException("The pawn cannot be promoted into another pawn");
             }
-            
+
+            e.Piece.PromotedFormPawn = true;
             return e.Piece;
         }
 
@@ -145,7 +146,7 @@ namespace Chess.Core
 
                 if (Winner is null && Draw is null && Board[x, y].Move(newX, newY, Board, out var capturedPiece, false))
                 {
-                    ManageGame(state, newX, newY, capturedPiece);
+                    ManageGame(state, x, newX, newY, capturedPiece);
                     return true;
                 }
             }
@@ -153,7 +154,7 @@ namespace Chess.Core
             return false;
         }
 
-        private void ManageGame(BoardState state, int newX, int newY, ChessPiece capturedPiece)
+        private void ManageGame(BoardState state, int x, int newX, int newY, ChessPiece capturedPiece)
         {
             state.Board = new Board(Board);
 
@@ -169,19 +170,23 @@ namespace Chess.Core
             if (Board[newX, newY].OccupiedBy != state.CurrentPiece)
             {
                 state.PawnPromotion = Board[newX, newY].OccupiedBy;
-                Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(new Pawn(-1, -1, Turn));
-                Captured[Enum.GetName(typeof(PieceColor), Turn)].Sort();
+                Captured[Enum.GetName(typeof(PieceColor), ~Turn)].Add(new Pawn(-1, -1, Turn));
+                Captured[Enum.GetName(typeof(PieceColor), ~Turn)].Sort();
             }
 
-            if (!(capturedPiece is null))
+            if (capturedPiece is not null)
             {
-                Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(capturedPiece);
-                Captured[Enum.GetName(typeof(PieceColor), Turn)].Sort();
+                if (!capturedPiece.PromotedFormPawn)
+                {
+                    Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(capturedPiece);
+                    Captured[Enum.GetName(typeof(PieceColor), Turn)].Sort();
+                }
+
                 state.IsCapturing = true;
 
                 var canAlsoCapture = Board.CanAlsoCapture(newX, newY, Turn, Board[newX, newY].OccupiedBy.Piece);
-                state.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == newX;
-                state.CouldAnotherPieceCapture = !(canAlsoCapture is null) && !state.CouldAnotherPieceCaptureSameFile;
+                state.CouldAnotherPieceCaptureSameFile = canAlsoCapture?.X == x;
+                state.CouldAnotherPieceCapture = canAlsoCapture is not null && !state.CouldAnotherPieceCaptureSameFile;
 
                 if (capturedPiece.Y != newY)
                 {
@@ -221,7 +226,7 @@ namespace Chess.Core
             Board.UnEnPassantAllPawns();
             BoardStates[Enum.GetName(typeof(PieceColor), Turn)].Add(state);
 
-            Turn = Turn == PieceColor.White ? PieceColor.Black : PieceColor.White;
+            Turn = ~Turn;
         }
 
         private bool CheckForStalemate(PieceColor oppositeColor, BoardState state)
@@ -295,10 +300,10 @@ namespace Chess.Core
         {
             BoardState.CheckForRepeatingStates(BoardStates, state, Turn);
 
-            var white = BoardStates["White"].Where(x => x.TimesRepeated == 3).ToList();
-            var black = BoardStates["Black"].Where(x => x.TimesRepeated == 3).ToList();
+            var white = BoardStates["White"].Where(x => x.TimesRepeated == 3);
+            var black = BoardStates["Black"].Where(x => x.TimesRepeated == 3);
 
-            return white.Count != 0 || black.Count != 0;
+            return white.Any() || black.Any();
         }
     }
 }
