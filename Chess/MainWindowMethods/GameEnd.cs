@@ -9,6 +9,75 @@ namespace Chess
 {
     public partial class MainWindow : Window
     {
+        private void EndGame()
+        {
+            string message = String.Empty;
+
+            if (Game.Winner is not null)
+            {
+                if (!GameFinished)
+                {
+                    message = $"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!";
+
+                    switch (Game.Win)
+                    {
+                        case WonBy.Checkmate:
+                            GameEnd.Reason.Text = "Checkmate.";
+                            break;
+
+                        case WonBy.Resignation:
+                            GameEnd.Reason.Text = "Resignation.";
+                            break;
+
+                        case WonBy.Timeout:
+                            GameEnd.Reason.Text = "Timeout.";
+                            break;
+                    }
+                }
+            }
+
+            switch (Game.Draw)
+            {
+                case DrawBy.Stalemate:
+                    message = $"Draw";
+                    GameEnd.Reason.Text = "Stalemate.";
+                    break;
+
+                case DrawBy.FiftyMoveRule:
+                    message = "Draw";
+                    GameEnd.Reason.Text = "by y'all being boring.";
+                    break;
+
+                case DrawBy.MutualAgreement:
+                    message = "Draw";
+                    GameEnd.Reason.Text = "Agreement.";
+                    break;
+
+                case DrawBy.InsuficientMaterial:
+                    message = "Draw";
+                    GameEnd.Reason.Text = "Insuficient material.";
+                    break;
+
+                case DrawBy.Repetition:
+                    message = "Draw";
+                    GameEnd.Reason.Text = "Repetition.";
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (message != String.Empty)
+            {
+                whiteTimer?.Stop();
+                blackTimer?.Stop();
+                RenderModels(Game.Board);
+                GameEnd.Message.Text = message;
+                GameEnd.Visibility = Visibility.Visible;
+                GameFinished = true;
+            }
+        }
+
         private void WhiteResign_Click(object sender, RoutedEventArgs e)
         {
             if (GameStarted && !DrawOffered)

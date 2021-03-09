@@ -14,45 +14,40 @@ namespace Chess
         {
             if (Game.Move(Start.X, Start.Y, End.X, End.Y))
             {
-                HandleSounds();
-                GameStarted = true;
-                WhiteConfirmation.Visibility = Visibility.Collapsed;
-                BlackConfirmation.Visibility = Visibility.Collapsed;
-
-                DrawRejected(this, e);
-
-                if (Game.Turn == PieceColor.White)
+                if (GameHandler.HasToPromote)
                 {
-                    WhiteClockBorder.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                    BlackClockBorder.Background = new SolidColorBrush(Color.FromRgb(44, 39, 35));
-
-                    WhiteTimeTextBlock.Foreground = Brushes.Black;
-                    BlackTimeTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(152, 150, 149));
-                }
-                else
-                {
-                    WhiteClockBorder.Background = new SolidColorBrush(Color.FromRgb(152, 150, 149));
-                    BlackClockBorder.Background = new SolidColorBrush(Color.FromRgb(38, 33, 27));
-
-                    WhiteTimeTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(57, 53, 49));
-                    BlackTimeTextBlock.Foreground = Brushes.White;
+                    HandlePromotion();
+                    return;
                 }
 
-                LastMove = ((Start.X, Start.Y), (End.X, End.Y));
-                Start = (-1, -1);
-                JustPickedUp = false;
+                HandleAfterMoveLogic();
+            }
+        }
 
-                if (Game.BoardStates[Enum.GetName(typeof(PieceColor), ~Game.Turn)][^1].IsCapturing)
-                {
-                    RenderCapturedPieces();
-                }
+        private void HandleAfterMoveLogic()
+        {
+            HandleSounds();
+            GameStarted = true;
+            WhiteConfirmation.Visibility = Visibility.Collapsed;
+            BlackConfirmation.Visibility = Visibility.Collapsed;
 
-                AddMove();
+            DrawRejected(this, EventArgs.Empty);
+            ChangeClockColors();
 
-                if (whiteTimer is null && Settings.TimedGames.IsChecked == true)
-                {
-                    StartTimers();
-                }
+            LastMove = ((Start.X, Start.Y), (End.X, End.Y));
+            Start = (-1, -1);
+            JustPickedUp = false;
+
+            if (Game.BoardStates[Enum.GetName(typeof(PieceColor), ~Game.Turn)][^1].IsCapturing)
+            {
+                RenderCapturedPieces();
+            }
+
+            AddMove();
+
+            if (whiteTimer is null && Settings.TimedGames.IsChecked == true)
+            {
+                StartTimers();
             }
         }
 
@@ -129,6 +124,26 @@ namespace Chess
 
             whiteTimer.Start();
             blackTimer.Start();
+        }
+
+        private void ChangeClockColors()
+        {
+            if (Game.Turn == PieceColor.White)
+            {
+                WhiteClockBorder.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                BlackClockBorder.Background = new SolidColorBrush(Color.FromRgb(44, 39, 35));
+
+                WhiteTimeTextBlock.Foreground = Brushes.Black;
+                BlackTimeTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(152, 150, 149));
+            }
+            else
+            {
+                WhiteClockBorder.Background = new SolidColorBrush(Color.FromRgb(152, 150, 149));
+                BlackClockBorder.Background = new SolidColorBrush(Color.FromRgb(38, 33, 27));
+
+                WhiteTimeTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(57, 53, 49));
+                BlackTimeTextBlock.Foreground = Brushes.White;
+            }
         }
     }
 }

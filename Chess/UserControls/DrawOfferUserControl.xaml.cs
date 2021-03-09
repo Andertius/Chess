@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Chess
+namespace Chess.UserControls
 {
     public partial class DrawOfferUserControl : UserControl
     {

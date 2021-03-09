@@ -97,7 +97,7 @@ namespace Chess.Core.Pieces
 
                 if ((Y == 7 || Y == 0) && !isMock)
                 {
-                    Promote(board);
+                    GameHandler.HasToPromote = true;
                 }
 
                 board.CheckForProtection();
@@ -249,11 +249,6 @@ namespace Chess.Core.Pieces
                 Value == pawn.Value &&
                 IsMoved == pawn.IsMoved &&
                 CanBeEnPassanted == pawn.CanBeEnPassanted;
-        }
-
-        private void Promote(Board board)
-        {
-            board[X, Color == PieceColor.White ? 7 : 0].Occupy(GameHandler.RequestPromotion(this));
         }
     }
 }

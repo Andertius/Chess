@@ -38,11 +38,11 @@ namespace Chess
                 {
                     if (j != Start.X || 7 - i != Start.Y)
                     {
-                        RenderModels(i, j, board);
+                        RenderModel(i, j, board);
                     }
                     else if (!IsHolding)
                     {
-                        RenderModels(i, j, board);
+                        RenderModel(i, j, board);
                     }
                 }
             }
@@ -259,7 +259,7 @@ namespace Chess
             }
         }
 
-        private void RenderModels(int i, int j, Board board)
+        private void RenderModel(int i, int j, Board board)
         {
             var piece = board[j, 7 - i].OccupiedBy;
 

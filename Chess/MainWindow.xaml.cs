@@ -37,7 +37,6 @@ namespace Chess
             BlackOffer.Noed += DrawRejected;
 
             Game = new GameHandler();
-            GameHandler.PromotionRequested += Promote;
 
             Board = new List<List<Rectangle>>();
             MoveButtons = new List<Button>();
@@ -65,10 +64,6 @@ namespace Chess
 
         public bool IsPromotingPawn { get; set; }
 
-        public bool PieceChosen { get; set; }
-
-        public ChessPiece PromotedPiece { get; set; }
-
         public int PromotedPawnX { get; set; }
 
         public bool ToRenderOrNotToRender { get; set; }
@@ -92,75 +87,6 @@ namespace Chess
         public bool DrawOffered { get; set; }
 
         public event EventHandler Moved;
-
-        private void EndGame()
-        {
-            string message = String.Empty;
-
-            if (Game.Winner is not null)
-            {
-                if (!GameFinished)
-                {
-                    message = $"{Enum.GetName(typeof(PieceColor), Game.Winner)} won!";
-
-                    switch (Game.Win)
-                    {
-                        case WonBy.Checkmate:
-                            GameEnd.Reason.Text = "Checkmate.";
-                            break;
-
-                        case WonBy.Resignation:
-                            GameEnd.Reason.Text = "Resignation.";
-                            break;
-
-                        case WonBy.Timeout:
-                            GameEnd.Reason.Text = "Timeout.";
-                            break;
-                    }
-                }                
-            }
-
-            switch (Game.Draw)
-            {
-                case DrawBy.Stalemate:
-                    message = $"Draw";
-                    GameEnd.Reason.Text = "Stalemate.";
-                    break;
-
-                case DrawBy.FiftyMoveRule:
-                    message = "Draw";
-                    GameEnd.Reason.Text = "by y'all being boring.";
-                    break;
-
-                case DrawBy.MutualAgreement:
-                    message = "Draw";
-                    GameEnd.Reason.Text = "Agreement.";
-                    break;
-
-                case DrawBy.InsuficientMaterial:
-                    message = "Draw";
-                    GameEnd.Reason.Text = "Insuficient material.";
-                    break;
-
-                case DrawBy.Repetition:
-                    message = "Draw";
-                    GameEnd.Reason.Text = "Repetition.";
-                    break;
-
-                default:
-                    break;
-            }
-
-            if (message != String.Empty)
-            {
-                whiteTimer?.Stop();
-                blackTimer?.Stop();
-                RenderModels(Game.Board);
-                GameEnd.Message.Text = message;
-                GameEnd.Visibility = Visibility.Visible;
-                GameFinished = true;
-            }
-        }
 
         private void HandleSounds()
         {
@@ -225,16 +151,16 @@ namespace Chess
 
             foreach (var piece in Game.Captured["White"])
             {
-                Image pawn = new Image() { Width = 35 };
-                pawn.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "Black", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
-                CapturedByWhite.Children.Add(pawn);
+                Image pieceImage = new Image() { Width = 30 };
+                pieceImage.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "Black", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
+                CapturedByWhite.Children.Add(pieceImage);
             }
 
             foreach (var piece in Game.Captured["Black"])
             {
-                Image pawn = new Image() { Width = 35 };
-                pawn.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "White", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
-                CapturedByBlack.Children.Add(pawn);
+                Image pieceImage = new Image() { Width = 30 };
+                pieceImage.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "White", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
+                CapturedByBlack.Children.Add(pieceImage);
             }
 
             var whiteValue = Game.Captured["White"].Sum(x => x.Value);

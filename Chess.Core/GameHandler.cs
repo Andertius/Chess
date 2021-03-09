@@ -99,39 +99,17 @@ namespace Chess.Core
         public Dictionary<string, List<BoardState>> BoardStates { get; }
 
         /// <summary>
-        /// An event that handles the <see cref="Pawn"/> promotion.
+        /// Gets or sets the value indicating whether the plyare has to promote.
         /// </summary>
-        public static event EventHandler<PawnPromotionEventArgs> PromotionRequested;
+        public static bool HasToPromote { get; set; }
 
         /// <summary>
-        /// Requests the <see cref="ChessPiece"/> into which the <see cref="Pawn"/> should promote.
+        /// Gets or sets the piece that was captured after a move.
         /// </summary>
-        /// <returns>The <see cref="ChessPiece"/> that the <see cref="Pawn"/> should promote to.</returns>
-        /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is a <see cref="King"/>.</exception>
-        /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is a <see cref="Pawn"/>.</exception>
-        /// <exception cref="ArgumentException">The returning <see cref="ChessPiece"/> is <see langword="null"/>.</exception>
-        public static ChessPiece RequestPromotion(object sender)
-        {
-            var e = new PawnPromotionEventArgs();
-
-            PromotionRequested?.Invoke(sender, e);
-
-            if (e.Piece is null)
-            {
-                throw new ArgumentException("The chess piece cannot be null");
-            }
-            else if(e.Piece.Piece == Piece.King)
-            {
-                throw new ArgumentException("The pawn cannot be promoted into a king");
-            }
-            else if (e.Piece.Piece == Piece.Pawn)
-            {
-                throw new ArgumentException("The pawn cannot be promoted into another pawn");
-            }
-
-            e.Piece.PromotedFormPawn = true;
-            return e.Piece;
-        }
+        /// <remarks>
+        /// If none were captured, the the value is null.
+        /// </remarks>
+        public ChessPiece CapturedPiece { get; set; }
 
         /// <summary>
         /// Moves the <see cref="ChessPiece"/> in the given <see cref="Square"/> if it is a valid move,
@@ -146,7 +124,13 @@ namespace Chess.Core
 
                 if (Winner is null && Draw is null && Board[x, y].Move(newX, newY, Board, out var capturedPiece, false))
                 {
-                    ManageGame(state, x, newX, newY, capturedPiece);
+                    CapturedPiece = capturedPiece;
+
+                    if (!HasToPromote)
+                    {
+                        ManageGame(state, x, newX, newY, capturedPiece);
+                    }
+
                     return true;
                 }
             }
@@ -154,7 +138,15 @@ namespace Chess.Core
             return false;
         }
 
-        private void ManageGame(BoardState state, int x, int newX, int newY, ChessPiece capturedPiece)
+        /// <summary>
+        /// Updates the last board state after a move or pawn promotion.
+        /// </summary>
+        /// <param name="state">The board state to update.</param>
+        /// <param name="x">The starting file position.</param>
+        /// <param name="newX">The ending file posotion.</param>
+        /// <param name="newY">The ending rank position.</param>
+        /// <param name="capturedPiece">A piece that was captured during the move.</param>
+        public void ManageGame(BoardState state, int x, int newX, int newY, ChessPiece capturedPiece)
         {
             state.Board = new Board(Board);
 
@@ -167,9 +159,8 @@ namespace Chess.Core
                 state.IsShortCastle = true;
             }
 
-            if (Board[newX, newY].OccupiedBy != state.CurrentPiece)
+            if (HasToPromote)
             {
-                state.PawnPromotion = Board[newX, newY].OccupiedBy;
                 Captured[Enum.GetName(typeof(PieceColor), ~Turn)].Add(new Pawn(-1, -1, Turn));
                 Captured[Enum.GetName(typeof(PieceColor), ~Turn)].Sort();
             }

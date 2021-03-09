@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Chess"
+        xmlns:usrcont="clr-namespace:Chess.UserControls"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         Title="chess.ua" MinHeight="1000" MinWidth="1220" Background="#312E2B">
@@ -306,7 +306,7 @@
                         <DropShadowEffect ShadowDepth="0"/>
                     </Border.Effect>
 
-                    <local:SettingsUserControl x:Name="Settings"
+                    <usrcont:SettingsUserControl x:Name="Settings"
                                                Visibility="Collapsed"
                                                Background="White"/>
                 </Border>
@@ -317,7 +317,7 @@
                         <DropShadowEffect ShadowDepth="0"/>
                     </Border.Effect>
 
-                    <local:GameEndUserControl Background="White"
+                    <usrcont:GameEndUserControl Background="White"
                                               Visibility="Collapsed"
                                               x:Name="GameEnd"/>
                 </Border>
@@ -330,30 +330,30 @@
                         x:Name="PawnPromotionBorder"
                         Visibility="Collapsed">
                     <Border.Effect>
-                        <DropShadowEffect/>
+                        <DropShadowEffect ShadowDepth="0"/>
                     </Border.Effect>
 
                     <StackPanel>
                         <StackPanel x:Name="WhiteStackPanel"
                                     Orientation="Horizontal">
-                            <Button Width="100" Click="RookChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Rook">
                                 <Button.Content>
                                     <Image Source="Models\White\Rook.png"/>
                                 </Button.Content>
                             </Button>
-                            <Button Width="100" Click="BishopChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Bishop">
                                 <Button.Content>
                                     <Image Source="Models\White\Bishop.png"
                                            Width="100"/>
                                 </Button.Content>
                             </Button>
-                            <Button Width="100" Click="KnightChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Knight">
                                 <Button.Content>
                                     <Image Source="Models\White\Knight.png"
                                            Width="100"/>
                                 </Button.Content>
                             </Button>
-                            <Button Width="100" Click="QueenChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Queen">
                                 <Button.Content>
                                     <Image Source="Models\White\Queen.png"
                                            Width="100"/>
@@ -364,24 +364,24 @@
                         <StackPanel x:Name="BlackStackPanel"
                                     Orientation="Horizontal"
                                     Visibility="Collapsed">
-                            <Button Width="100" Click="RookChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Rook">
                                 <Button.Content>
                                     <Image Source="Models\Black\Rook.png"/>
                                 </Button.Content>
                             </Button>
-                            <Button Width="100" Click="BishopChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Bishop">
                                 <Button.Content>
                                     <Image Source="Models\Black\Bishop.png"
                                            Width="100"/>
                                 </Button.Content>
                             </Button>
-                            <Button Width="100" Click="KnightChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Knight">
                                 <Button.Content>
                                     <Image Source="Models\Black\Knight.png"
                                            Width="100"/>
                                 </Button.Content>
                             </Button>
-                            <Button Width="100" Click="QueenChosen">
+                            <Button Width="100" Click="PieceChosen" Tag="Queen">
                                 <Button.Content>
                                     <Image Source="Models\Black\Queen.png"
                                            Width="100"/>
@@ -501,7 +501,7 @@
                             <DropShadowEffect ShadowDepth="0"/>
                         </Border.Effect>
 
-                        <local:DrawOfferUserControl Background="White"
+                        <usrcont:DrawOfferUserControl Background="White"
                                                     Visibility="Collapsed"
                                                     x:Name="WhiteOffer"/>
                     </Border>
@@ -519,7 +519,7 @@
                             <DropShadowEffect ShadowDepth="0"/>
                         </Border.Effect>
 
-                        <local:DrawOfferUserControl Background="White"
+                        <usrcont:DrawOfferUserControl Background="White"
                                                     Visibility="Collapsed"
                                                     x:Name="BlackOffer"/>
                     </Border>

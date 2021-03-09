@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Chess
+namespace Chess.UserControls
 {
     /// <summary>
     /// Interaction logic for GameEndUserControl.xaml
