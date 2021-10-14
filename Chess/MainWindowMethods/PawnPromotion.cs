@@ -17,7 +17,7 @@ namespace Chess
                     new Queen(End.X, 7, PieceColor.White) :
                     new Queen(End.X, 0, PieceColor.Black);
 
-                queen.PromotedFormPawn = true;
+                queen.PromotedFromPawn = true;
                 FinishMove(queen);
                 return;
             }
@@ -62,7 +62,7 @@ namespace Chess
                 _ => throw new ArgumentException("Invald piece."),
             };
 
-            promotedPiece.PromotedFormPawn = true;
+            promotedPiece.PromotedFromPawn = true;
             FinishMove(promotedPiece);
         }
 

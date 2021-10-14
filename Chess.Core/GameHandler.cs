@@ -167,7 +167,7 @@ namespace Chess.Core
 
             if (capturedPiece is not null)
             {
-                if (!capturedPiece.PromotedFormPawn)
+                if (!capturedPiece.PromotedFromPawn)
                 {
                     Captured[Enum.GetName(typeof(PieceColor), Turn)].Add(capturedPiece);
                     Captured[Enum.GetName(typeof(PieceColor), Turn)].Sort();

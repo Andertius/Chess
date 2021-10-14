@@ -227,6 +227,7 @@ namespace Chess
             BlackTimeTextBlock.Text = "";
 
             RenderModels(Game.Board);
+            RenderCapturedPieces();
         }
     }
 }

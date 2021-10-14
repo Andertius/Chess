@@ -38,11 +38,7 @@ namespace Chess
             Start = (-1, -1);
             JustPickedUp = false;
 
-            if (Game.BoardStates[Enum.GetName(typeof(PieceColor), ~Game.Turn)][^1].IsCapturing)
-            {
-                RenderCapturedPieces();
-            }
-
+            RenderCapturedPieces();
             AddMove();
 
             if (whiteTimer is null && Settings.TimedGames.IsChecked == true)

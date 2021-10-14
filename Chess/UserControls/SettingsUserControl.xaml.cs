@@ -39,7 +39,7 @@ namespace Chess.UserControls
 
         public void ReadFile()
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load("Settings.xml");
 
             PlaySounds.IsChecked = doc.SelectSingleNode("Settings/PlaySounds").InnerText == "True";
@@ -57,8 +57,8 @@ namespace Chess.UserControls
         {
             Visibility = Visibility.Collapsed;
 
-            XmlDocument xmlDoc = new XmlDocument();
-            var xmlDecl = xmlDoc.CreateXmlDeclaration("1.0", "utf-8", "yes");
+            var xmlDoc = new XmlDocument();
+            XmlDeclaration xmlDecl = xmlDoc.CreateXmlDeclaration("1.0", "utf-8", "yes");
 
             XmlNode rootNode = xmlDoc.CreateElement("Settings");
             xmlDoc.AppendChild(rootNode);

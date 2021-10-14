@@ -90,8 +90,8 @@ namespace Chess
 
         private void HandleSounds()
         {
-            var turn = Game.Turn == PieceColor.White ? "Black" : "White";
-            var lastMove = Game.BoardStates[turn][^1];
+            string turn = Game.Turn == PieceColor.White ? "Black" : "White";
+            BoardState lastMove = Game.BoardStates[turn][^1];
             string soundName;
 
             if (lastMove.IsCheck)
@@ -105,7 +105,7 @@ namespace Chess
             else if (lastMove.IsCapturing)
             {
                 soundName = "Capture.wav";
-            }            
+            }
             else if (lastMove.IsLongCastle || lastMove.IsShortCastle)
             {
                 soundName = "Castle.wav";
@@ -151,35 +151,52 @@ namespace Chess
 
             foreach (var piece in Game.Captured["White"])
             {
-                Image pieceImage = new Image() { Width = 30 };
-                pieceImage.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "Black", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
+                var pieceImage = new Image() { Width = 30 };
+                pieceImage.Source = new BitmapImage(
+                    new Uri(System.IO.Path
+                        .Combine("pack://application:,,,/Chess;component",
+                            "Models",
+                            "Black",
+                            $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
                 CapturedByWhite.Children.Add(pieceImage);
             }
 
             foreach (var piece in Game.Captured["Black"])
             {
-                Image pieceImage = new Image() { Width = 30 };
-                pieceImage.Source = new BitmapImage(new Uri(System.IO.Path.Combine("pack://application:,,,/Chess;component", "Models", "White", $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
+                var pieceImage = new Image() { Width = 30 };
+                pieceImage.Source = new BitmapImage(
+                    new Uri(System.IO.Path
+                    .Combine("pack://application:,,,/Chess;component",
+                        "Models",
+                        "White",
+                        $"{Enum.GetName(typeof(Piece), piece.Piece)}.png")));
                 CapturedByBlack.Children.Add(pieceImage);
             }
 
-            var whiteValue = Game.Captured["White"].Sum(x => x.Value);
-            var blackValue = Game.Captured["Black"].Sum(x => x.Value);
-            var txtblck = new TextBlock()
+            var capturedByWhiteValue = new TextBlock()
             {
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = Brushes.White,
             };
 
-            if (whiteValue > blackValue)
+            var capturedByBlackValue = new TextBlock()
             {
-                txtblck.Text = $"+{whiteValue - blackValue}";
-                CapturedByWhite.Children.Add(txtblck);
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = Brushes.White,
+            };
+
+            int white = Game.WhitePieces.Select(x => x.Value).Sum();
+            int black = Game.BlackPieces.Select(x => x.Value).Sum();
+
+            if (white > black)
+            {
+                capturedByWhiteValue.Text = $"+{white - black}";
+                CapturedByWhite.Children.Add(capturedByWhiteValue);
             }
-            else if (whiteValue < blackValue)
+            else if (white < black)
             {
-                txtblck.Text = $"+{blackValue - whiteValue}";
-                CapturedByBlack.Children.Add(txtblck);
+                capturedByBlackValue.Text = $"+{black - white}";
+                CapturedByBlack.Children.Add(capturedByBlackValue);
             }
         }
     }
